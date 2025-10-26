@@ -31,20 +31,20 @@ export function Navbar() {
     setIsOpen(!isOpen)
   }
 
-  const logoElement = (
-    <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
-      <div className="absolute inset-0 border border-gray-300 rounded-sm opacity-60"></div>
-      <div className="absolute w-2 h-2 bg-blue-400 rounded-full top-1 left-1"></div>
-      <div className="absolute w-1 h-1 bg-gray-300 rounded-full top-1 right-1"></div>
-      <div className="absolute w-1 h-1 bg-gray-300 rounded-full bottom-1 left-1"></div>
-      <div className="absolute w-2 h-0.5 bg-gray-300 bottom-1.5 right-1"></div>
-      <span className="absolute text-xs font-bold text-white">AI</span>
+    const logoElement = (
+    <div className="flex items-center gap-2 shrink-0">
+      <img 
+        src="/logo.jpeg" 
+        alt="Logo" 
+        className="w-8 h-8 object-contain"
+      />
+      <span className="text-xl font-bold text-white">IRIS</span>
     </div>
   )
 
   const navLinksData = [
-    { label: "Services", href: "#services" },
-    { label: "Case Studies", href: "#testimonials" },
+    { label: "Projects", href: "#" },
+    { label: "Participation", href: "#" },
   ]
 
   const loginButtonElement = (
