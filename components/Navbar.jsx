@@ -1,12 +1,8 @@
 'use client'
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 
-type AnimatedNavLinkProps = {
-  href: string;
-  children: React.ReactNode;
-};
 
-const AnimatedNavLink = ({ href, children }: AnimatedNavLinkProps) => {
+const AnimatedNavLink = ({ href, children }) => {
   const [isHovered, setIsHovered] = useState(false)
   
   return (
@@ -35,25 +31,25 @@ export function Navbar() {
     setIsOpen(!isOpen)
   }
 
-  const logoElement = (
-    <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
-      <div className="absolute inset-0 border border-gray-300 rounded-sm opacity-60"></div>
-      <div className="absolute w-2 h-2 bg-blue-400 rounded-full top-1 left-1"></div>
-      <div className="absolute w-1 h-1 bg-gray-300 rounded-full top-1 right-1"></div>
-      <div className="absolute w-1 h-1 bg-gray-300 rounded-full bottom-1 left-1"></div>
-      <div className="absolute w-2 h-0.5 bg-gray-300 bottom-1.5 right-1"></div>
-      <span className="absolute text-xs font-bold text-white">AI</span>
+    const logoElement = (
+    <div className="flex items-center gap-2 shrink-0">
+      <img 
+        src="/logo.jpeg" 
+        alt="Logo" 
+        className="w-8 h-8 object-contain"
+      />
+      <span className="text-xl font-bold text-white">IRIS</span>
     </div>
   )
 
   const navLinksData = [
-    { label: "Services", href: "#services" },
-    { label: "Case Studies", href: "#testimonials" },
+    { label: "Projects", href: "#" },
+    { label: "Participation", href: "#" },
   ]
 
   const loginButtonElement = (
     <button className="px-5 py-2 text-sm font-medium border border-gray-700 bg-gray-800 bg-opacity-60 text-gray-300 rounded-full hover:border-gray-500 hover:text-white hover:bg-opacity-80 transition-all duration-200 w-full sm:w-auto whitespace-nowrap">
-      Call Us
+      Explore
     </button>
   )
 
@@ -68,7 +64,7 @@ export function Navbar() {
                      group-hover:opacity-60 group-hover:blur-xl group-hover:-m-3"
       ></div>
       <button className="relative z-10 px-5 py-2 text-sm font-semibold text-white bg-linear-to-r from-blue-500 to-purple-600 rounded-full hover:from-blue-600 hover:to-purple-700 transition-all duration-200 w-full sm:w-auto whitespace-nowrap shadow-lg">
-        Get Quote
+        Join Us
       </button>
     </div>
   )
