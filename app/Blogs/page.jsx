@@ -15,6 +15,7 @@ import Link from "next/link";
 import Image from "next/image";
 import fs from "fs"
 import matter from 'gray-matter';
+import { Navbar } from "@/components/Navbar";
 
 
 const dirContent = fs.readdirSync("articles", "utf-8")
@@ -28,9 +29,11 @@ const blogs = dirContent.map(file=>{
 const BlogsPage = () => {
 
   return (
+    <>
+    <Navbar/>
     <div className="blogs-container min-h-screen bg-linear-to-br from-[#050505] via-[#0a0a0a] to-[#111] text-gray-200 py-16 px-6 md:px-16">
       {/* Header */}
-      <div className="blogs-header text-center mb-12">
+      <div className="blogs-header text-center mb-12 mt-15">
         <h1 className="text-4xl md:text-5xl font-extrabold bg-linear-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(59,130,246,0.6)]">
           Blogs
         </h1>
@@ -66,6 +69,7 @@ const BlogsPage = () => {
       ))}
     </div>
     </div>
+    </>
   );
 };
 

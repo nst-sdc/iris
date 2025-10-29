@@ -19,6 +19,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link";
+import { Navbar } from "@/components/Navbar";
 
 
 export default async function Page({ params }) {
@@ -52,6 +53,8 @@ export default async function Page({ params }) {
 
   const htmlContent = (await processor.process(content)).toString();
   return (
+  <>
+  <Navbar/>
  <div className="blogs-container min-h-screen bg-linear-to-br from-[#050505] via-[#0a0a0a] to-[#111] text-gray-200 py-16 px-6 md:px-16">
   <Link href={`/Blogs`} className="w-full block mb-8">
     <Button
@@ -105,6 +108,7 @@ export default async function Page({ params }) {
     </div>
   </div>
 </div>
+</>
 
   );
 }
