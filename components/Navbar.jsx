@@ -42,9 +42,10 @@ export function Navbar() {
     </div>
   )
 
-  const navLinksData = [
+ const navLinksData = [
+    { label: "Home", href: "/" },
     { label: "Projects", href: "#" },
-    { label: "Participation", href: "#" },
+    { label: "About Us", href: "/aboutus" },
     { label: "Blogs", href: "/Blogs" },
   ]
 
