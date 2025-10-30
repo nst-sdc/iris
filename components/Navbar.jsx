@@ -45,6 +45,7 @@ export function Navbar() {
   const navLinksData = [
     { label: "Projects", href: "#" },
     { label: "Participation", href: "#" },
+    { label: "Blogs", href: "/Blogs" },
   ]
 
   const loginButtonElement = (
