@@ -35,9 +35,9 @@ export function Navbar() {
       <img
         src="/logo.jpeg"
         alt="Logo"
-        className="w-8 h-8 object-contain"
+        className="w-8 h-8 rounded-full object-cover"
       />
-      <span className="text-xl font-bold text-white">IRIS</span>
+      <span className="text-xl font-bold text-white ml-2">IRIS</span>
     </a>
 
   )
