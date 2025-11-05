@@ -4,10 +4,10 @@ import React, { useState } from "react"
 
 const AnimatedNavLink = ({ href, children }) => {
   const [isHovered, setIsHovered] = useState(false)
-  
+
   return (
-    <a 
-      href={href} 
+    <a
+      href={href}
       className="relative inline-block text-sm font-medium"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -15,10 +15,9 @@ const AnimatedNavLink = ({ href, children }) => {
       <span className={`transition-colors duration-300 ${isHovered ? 'text-white' : 'text-gray-300'}`}>
         {children}
       </span>
-      <span 
-        className={`absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-blue-400 to-purple-500 transition-all duration-300 ease-out ${
-          isHovered ? 'w-full' : 'w-0'
-        }`}
+      <span
+        className={`absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-blue-400 to-purple-500 transition-all duration-300 ease-out ${isHovered ? 'w-full' : 'w-0'
+          }`}
       ></span>
     </a>
   )
@@ -31,18 +30,19 @@ export function Navbar() {
     setIsOpen(!isOpen)
   }
 
-    const logoElement = (
-    <div className="flex items-center gap-2 shrink-0">
-      <img 
-        src="/logo.jpeg" 
-        alt="Logo" 
+  const logoElement = (
+    <a href="/" className="flex items-center gap-2 shrink-0">
+      <img
+        src="/logo.jpeg"
+        alt="Logo"
         className="w-8 h-8 object-contain"
       />
       <span className="text-xl font-bold text-white">IRIS</span>
-    </div>
+    </a>
+
   )
 
- const navLinksData = [
+  const navLinksData = [
     { label: "Home", href: "/" },
     { label: "Projects", href: "#" },
     { label: "About Us", href: "/aboutus" },
@@ -105,19 +105,16 @@ export function Navbar() {
           >
             <div className="relative w-5 h-4 flex flex-col justify-between">
               <span
-                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${
-                  isOpen ? "rotate-45 translate-y-1.5" : ""
-                }`}
+                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isOpen ? "rotate-45 translate-y-1.5" : ""
+                  }`}
               ></span>
               <span
-                className={`w-full h-0.5 bg-current transition-all duration-300 ease-in-out ${
-                  isOpen ? "opacity-0" : "opacity-100"
-                }`}
+                className={`w-full h-0.5 bg-current transition-all duration-300 ease-in-out ${isOpen ? "opacity-0" : "opacity-100"
+                  }`}
               ></span>
               <span
-                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${
-                  isOpen ? "-rotate-45 -translate-y-1.5" : ""
-                }`}
+                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isOpen ? "-rotate-45 -translate-y-1.5" : ""
+                  }`}
               ></span>
             </div>
           </button>
@@ -148,7 +145,7 @@ export function Navbar() {
         </div>
       </header>
 
-      
+
     </div>
   )
 }
