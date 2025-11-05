@@ -77,7 +77,7 @@ export function Navbar() {
         className={`fixed top-4 sm:top-6 left-1/2 transform -translate-x-1/2 z-50
                          flex flex-col items-center
                          px-5 sm:px-6 py-3.5 backdrop-blur-xl
-                         border border-gray-700 bg-gray-900 bg-opacity-50
+                         border border-gray-700 bg-[rgb(23,17,41)] bg-opacity-50
                          w-[calc(100%-1rem)] sm:w-auto max-w-[95vw]
                          shadow-2xl shadow-black/50
                          ${isOpen ? 'rounded-2xl transition-all duration-300 ease-in-out' : 'rounded-full transition-all duration-200 ease-in-out'}`}
