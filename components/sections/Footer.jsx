@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, ArrowRight } from "lucide-react"
+import { Mail, Phone, MapPin, Linkedin, Twitter, Instagram, ArrowRight, Target } from "lucide-react"
 
 export function Footer() {
   const services = [
@@ -18,9 +18,9 @@ export function Footer() {
   ]
 
   const socialLinks = [
-    { icon: Linkedin, href: "#" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/iris-the-robotics-club/" },
     { icon: Twitter, href: "#" },
-    { icon: Instagram, href: "#" },
+    { icon: Instagram, href: "https://www.instagram.com/iris.nstpune/" },
   ]
 
   return (
@@ -44,6 +44,8 @@ export function Footer() {
                   <a
                     key={index}
                     href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300"
                   >
                     <Icon className="h-5 w-5" />
