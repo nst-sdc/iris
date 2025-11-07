@@ -4,10 +4,10 @@ import React, { useState } from "react"
 
 const AnimatedNavLink = ({ href, children }) => {
   const [isHovered, setIsHovered] = useState(false)
-  
+
   return (
-    <a 
-      href={href} 
+    <a
+      href={href}
       className="relative inline-block text-sm font-medium"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -15,10 +15,9 @@ const AnimatedNavLink = ({ href, children }) => {
       <span className={`transition-colors duration-300 ${isHovered ? 'text-white' : 'text-gray-300'}`}>
         {children}
       </span>
-      <span 
-        className={`absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-blue-400 to-purple-500 transition-all duration-300 ease-out ${
-          isHovered ? 'w-full' : 'w-0'
-        }`}
+      <span
+        className={`absolute bottom-0 left-0 h-0.5 bg-linear-to-r from-blue-400 to-purple-500 transition-all duration-300 ease-out ${isHovered ? 'w-full' : 'w-0'
+          }`}
       ></span>
     </a>
   )
@@ -31,18 +30,19 @@ export function Navbar() {
     setIsOpen(!isOpen)
   }
 
-    const logoElement = (
-    <div className="flex items-center gap-2 shrink-0">
-      <img 
-        src="/logo.jpeg" 
-        alt="Logo" 
-        className="w-8 h-8 object-contain"
+  const logoElement = (
+    <a href="/" className="flex items-center gap-2 shrink-0">
+      <img
+        src="/logo.jpeg"
+        alt="Logo"
+        className="w-8 h-8 rounded-full object-cover"
       />
-      <span className="text-xl font-bold text-white">IRIS</span>
-    </div>
+      <span className="text-xl font-bold text-white ml-2">IRIS</span>
+    </a>
+
   )
 
- const navLinksData = [
+  const navLinksData = [
     { label: "Home", href: "/" },
     { label: "Projects", href: "#" },
     { label: "About Us", href: "/aboutus" },
@@ -77,7 +77,7 @@ export function Navbar() {
         className={`fixed top-4 sm:top-6 left-1/2 transform -translate-x-1/2 z-50
                          flex flex-col items-center
                          px-5 sm:px-6 py-3.5 backdrop-blur-xl
-                         border border-gray-700 bg-gray-900 bg-opacity-50
+                         border border-gray-700 bg-[rgb(23,17,41)] bg-opacity-50
                          w-[calc(100%-1rem)] sm:w-auto max-w-[95vw]
                          shadow-2xl shadow-black/50
                          ${isOpen ? 'rounded-2xl transition-all duration-300 ease-in-out' : 'rounded-full transition-all duration-200 ease-in-out'}`}
@@ -105,19 +105,16 @@ export function Navbar() {
           >
             <div className="relative w-5 h-4 flex flex-col justify-between">
               <span
-                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${
-                  isOpen ? "rotate-45 translate-y-1.5" : ""
-                }`}
+                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isOpen ? "rotate-45 translate-y-1.5" : ""
+                  }`}
               ></span>
               <span
-                className={`w-full h-0.5 bg-current transition-all duration-300 ease-in-out ${
-                  isOpen ? "opacity-0" : "opacity-100"
-                }`}
+                className={`w-full h-0.5 bg-current transition-all duration-300 ease-in-out ${isOpen ? "opacity-0" : "opacity-100"
+                  }`}
               ></span>
               <span
-                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${
-                  isOpen ? "-rotate-45 -translate-y-1.5" : ""
-                }`}
+                className={`w-full h-0.5 bg-current transform transition-all duration-300 ease-in-out ${isOpen ? "-rotate-45 -translate-y-1.5" : ""
+                  }`}
               ></span>
             </div>
           </button>
@@ -148,7 +145,7 @@ export function Navbar() {
         </div>
       </header>
 
-      
+
     </div>
   )
 }

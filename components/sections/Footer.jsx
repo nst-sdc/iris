@@ -114,7 +114,7 @@ export function Footer() {
                 <div className="p-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
                   <MapPin className="h-4 w-4" />
                 </div>
-                <span>NST, ADYPU</span>
+                <a href="https://maps.app.goo.gl/df92BfVHGdBgXRKo7" target="_blank">NST, ADYPU</a>
               </div>
             </div>
           </div>
