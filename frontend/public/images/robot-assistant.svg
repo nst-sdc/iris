@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <!-- Robot head -->
+    <circle cx="100" cy="100" r="80" fill="#2A2A2A" stroke="#00F5FF" stroke-width="3"></circle>
+    
+    <!-- Robot face -->
+    <g transform="translate(50, 70)">
+      <!-- Eyes -->
+      <circle cx="30" cy="30" r="15" fill="#121212" stroke="#00F5FF" stroke-width="2"></circle>
+      <circle cx="30" cy="30" r="5" fill="#00F5FF"></circle>
+      <circle cx="70" cy="30" r="15" fill="#121212" stroke="#00F5FF" stroke-width="2"></circle>
+      <circle cx="70" cy="30" r="5" fill="#00F5FF"></circle>
+      
+      <!-- Mouth -->
+      <rect x="25" y="60" width="50" height="10" rx="5" fill="#00F5FF"></rect>
+      
+      <!-- Antenna -->
+      <line x1="50" y1="-30" x2="50" y2="-10" stroke="#00F5FF" stroke-width="3"></line>
+      <circle cx="50" cy="-35" r="5" fill="#8B5CF6"></circle>
+    </g>
+    
+    <!-- Circuit patterns -->
+    <path d="M30,100 L50,100 M150,100 L170,100" stroke="#00F5FF" stroke-width="2" opacity="0.7"></path>
+    <path d="M100,30 L100,50 M100,150 L100,170" stroke="#00F5FF" stroke-width="2" opacity="0.7"></path>
+    
+    <!-- Glowing effect -->
+    <circle cx="100" cy="100" r="90" stroke="#00F5FF" stroke-width="1" opacity="0.3"></circle>
+    <circle cx="100" cy="100" r="95" stroke="#00F5FF" stroke-width="1" opacity="0.2"></circle>
+  </g>
+</svg>

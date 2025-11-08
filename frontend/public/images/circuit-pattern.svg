@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="800px" viewBox="0 0 800 800" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g stroke="#00F5FF" stroke-width="1.5">
+      <path d="M200,100 L300,100 L300,200 L400,200 L400,300 L500,300 L500,400" opacity="0.6"></path>
+      <path d="M100,200 L200,200 L200,300 L300,300 L300,400 L400,400 L400,500" opacity="0.6"></path>
+      <path d="M500,100 L600,100 L600,200 L700,200" opacity="0.6"></path>
+      <path d="M300,500 L400,500 L400,600 L500,600 L500,700" opacity="0.6"></path>
+      <path d="M100,400 L200,400 L200,500 L300,500" opacity="0.6"></path>
+      <path d="M600,300 L700,300 L700,400 L600,400 L600,500 L500,500" opacity="0.6"></path>
+      <path d="M100,600 L200,600 L200,700 L300,700" opacity="0.6"></path>
+      <path d="M500,700 L600,700 L600,600 L700,600" opacity="0.6"></path>
+      
+      <circle cx="200" cy="100" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="300" cy="200" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="400" cy="300" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="500" cy="400" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="100" cy="200" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="200" cy="300" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="300" cy="400" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="400" cy="500" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="500" cy="100" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="600" cy="200" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="700" cy="200" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="300" cy="500" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="400" cy="600" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="500" cy="700" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="100" cy="400" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="200" cy="500" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="600" cy="300" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="700" cy="400" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="600" cy="500" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="100" cy="600" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="200" cy="700" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="600" cy="700" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      <circle cx="700" cy="600" r="5" fill="#00F5FF" opacity="0.8"></circle>
+      
+      <g stroke="#8B5CF6" stroke-width="1">
+        <path d="M150,150 L250,150 L250,250 L350,250 L350,350 L450,350 L450,450" opacity="0.4"></path>
+        <path d="M550,150 L650,150 L650,250 L750,250" opacity="0.4"></path>
+        <path d="M350,550 L450,550 L450,650 L550,650 L550,750" opacity="0.4"></path>
+        <path d="M150,450 L250,450 L250,550 L350,550" opacity="0.4"></path>
+        <path d="M650,350 L750,350 L750,450 L650,450 L650,550 L550,550" opacity="0.4"></path>
+        <path d="M150,650 L250,650 L250,750 L350,750" opacity="0.4"></path>
+        <path d="M550,750 L650,750 L650,650 L750,650" opacity="0.4"></path>
+        
+        <circle cx="150" cy="150" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="250" cy="250" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="350" cy="350" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="450" cy="450" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="550" cy="150" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="650" cy="250" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="750" cy="250" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="350" cy="550" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="450" cy="650" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="550" cy="750" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="150" cy="450" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="250" cy="550" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="650" cy="350" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="750" cy="450" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="650" cy="550" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="150" cy="650" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="250" cy="750" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="650" cy="750" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+        <circle cx="750" cy="650" r="3" fill="#8B5CF6" opacity="0.6"></circle>
+      </g>
+    </g>
+  </g>
+</svg>
