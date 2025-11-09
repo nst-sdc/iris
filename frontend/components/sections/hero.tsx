@@ -48,10 +48,9 @@ export default function Hero() {
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.3 }}
               className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
-            >
-              <span className="text-glow-cyan">Empowering Innovators</span> <br />
-              <span className="gradient-text">to Design a</span> <br />
-              <span className="text-glow-violet">Smarter World</span>
+            > 
+<span className="font-spacefont text-[7rem] bg-iris-gradient text-transparent bg-clip-text drop-shadow-glow">
+IRIS</span>
             </motion.h1>
             
             <motion.p

@@ -33,21 +33,24 @@ export default function Footer() {
               </p>
               <div className="flex space-x-4">
                 <a 
-                  href="#" 
+                  target="_blank"
+                  href="https://github.com/nst-sdc/iris" 
                   className="w-9 h-9 rounded-full bg-dark-300 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-dark-200 transition-colors duration-300"
                   aria-label="GitHub"
                 >
                   <Github className="w-5 h-5" />
                 </a>
                 <a 
-                  href="#" 
+                 target="_blank"
+                  href="https://www.linkedin.com/in/iris-the-robotics-club/" 
                   className="w-9 h-9 rounded-full bg-dark-300 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-dark-200 transition-colors duration-300"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="w-5 h-5" />
                 </a>
                 <a 
-                  href="#" 
+                 target="_blank"
+                  href="https://www.instagram.com/iris.nstpune/" 
                   className="w-9 h-9 rounded-full bg-dark-300 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-dark-200 transition-colors duration-300"
                   aria-label="Instagram"
                 >
