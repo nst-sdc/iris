@@ -39,7 +39,7 @@ export function RouteChangeProvider({ children }: RouteChangeProviderProps) {
   
   return (
     <RouteChangeContext.Provider value={{ isChangingRoute }}>
-      {/* <LoadingScreen /> */}
+      <LoadingScreen />
       {children}
     </RouteChangeContext.Provider>
   );

@@ -103,7 +103,7 @@ export default function GalleryPage() {
           scrub: true
         },
         y: 50,
-        opacity: 1,
+        opacity: 0,
         duration: 1
       });
       
@@ -115,7 +115,7 @@ export default function GalleryPage() {
           scrub: true
         },
         y: 30,
-        opacity: 1,
+        opacity: 0,
         duration: 1,
         delay: 0.2
       });
@@ -322,7 +322,6 @@ export default function GalleryPage() {
         )}
       </AnimatePresence>
       
-      
       {/* Floating text labels */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="floating-label absolute left-[10%] top-[30%] text-6xl font-bold text-primary/5">Innovation</div>
@@ -353,7 +352,6 @@ export default function GalleryPage() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            
             <h1 className="hero-title text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               <span className="text-glow-cyan">Gallery of</span>{" "}
               <span className="gradient-text">Innovation</span>

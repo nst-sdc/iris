@@ -42,19 +42,18 @@ export default function About() {
       gsap.registerPlugin(ScrollTrigger);
       
       // Create scroll-triggered animations
-gsap.from(".stat-card", {
-  y: 50,
-  opacity: 0,
-  duration: 0.8,
-  stagger: 0.2,
-  scrollTrigger: {
-    trigger: sectionRef.current,
-    start: "top 80%",
-    end: "bottom 60%",
-    toggleActions: "play none none none",
-  },
-  clearProps: "all", // Clears inline styles after animation
-});
+      gsap.from(".stat-card", {
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          end: "bottom 60%",
+          toggleActions: "play none none none"
+        }
+      });
     };
     
     initScrollTrigger();
