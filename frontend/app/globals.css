@@ -18,6 +18,16 @@
     border: 1px solid #1f1f1f;
     transition: all 0.3s ease;
   }
+
+  @layer base {
+  .prose-invert {
+    --tw-prose-body: #d4d4d4;
+    --tw-prose-headings: #ffffff;
+    --tw-prose-links: #60a5fa;
+    --tw-prose-bold: #ffffff;
+    --tw-prose-quotes: #a1a1aa;
+  }
+}
   
   .glass-card:hover {
     border-color: #2a2a2a;
