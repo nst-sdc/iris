@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 // Sample gallery images data
 const galleryImages = [
   {
     id: 1,
-    src: "/images/gallery/gallery1.jpg", // Placeholder - will need to be created
+    src: "/images/gallery/gallery1.png", // Placeholder - will need to be created
     alt: "Team working on a drone project",
     width: 600,
     height: 400,
@@ -72,7 +73,8 @@ export default function Gallery() {
           start: "top 80%",
           end: "bottom 60%",
           toggleActions: "play none none none"
-        }
+        },
+        clearProps: "all",
       });
     };
     
@@ -150,13 +152,13 @@ export default function Gallery() {
                 <span className="text-lg font-bold text-white/30">Gallery Image {image.id}</span>
               </div>
               {/* Uncomment when images are available */}
-              {/* <Image 
+              {/* { <Image 
                 src={image.src} 
                 alt={image.alt}
                 width={image.width}
                 height={image.height}
                 className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
-              /> */}
+              /> } */}
               
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">

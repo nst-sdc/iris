@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'spacefont';
+  src: url('/fonts/Spacefonts.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer utilities {
   /* Glassmorphic card styles */
   .glass-card {
@@ -338,6 +346,16 @@ body {
   right: 0;
   bottom: 0;
   z-index: -1;
+}
+
+.bg-iris-gradient {
+  background-image: linear-gradient(90deg, #6ef6ff 0%, #00d0ff 40%, #00a8ff 100%);
+}
+
+.drop-shadow-glow {
+  filter: drop-shadow(0 8px 30px rgba(0,160,255,0.18));
+  /* add a subtle extra text-shadow for sharpness */
+  text-shadow: 0 2px 6px rgba(0,160,255,0.12);
 }
 
 /* Animated gradient background */

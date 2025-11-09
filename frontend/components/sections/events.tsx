@@ -83,7 +83,8 @@ export default function Events() {
             start: "top 80%",
             end: "bottom 60%",
             toggleActions: "play none none none"
-          }
+          },
+  clearProps: "all",
         });
       }
     };

@@ -1,0 +1,49 @@
+# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Build output
+dist/
+build/
+.next/
+out/
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Cache
+.cache/
+.next/cache/
+.vscode/
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional lock files (uncomment if you don’t want them tracked)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml

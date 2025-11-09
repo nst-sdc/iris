@@ -61,7 +61,8 @@ export default function Projects() {
           start: "top 80%",
           end: "bottom 60%",
           toggleActions: "play none none none"
-        }
+        },
+  clearProps: "all",
       });
     };
     
