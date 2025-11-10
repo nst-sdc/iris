@@ -1,13 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Github, Users, Calendar } from "lucide-react";
-
-// Import GSAP and ScrollTrigger
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 // Define project types
 type TeamMember = {
@@ -338,64 +334,91 @@ const projectsData: ProjectsDataType = {
   ]
 };
 
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 30,
+    scale: 0.9
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 12
+    }
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.8,
+    y: -20,
+    transition: {
+      duration: 0.2
+    }
+  }
+};
+
+const headerVariants = {
+  hidden: { 
+    opacity: 0,
+    y: -50,
+    scale: 0.95
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+      duration: 0.8
+    }
+  }
+};
+
+const textVariants = {
+  hidden: { 
+    opacity: 0,
+    x: -20
+  },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.6
+    }
+  })
+};
+
 export default function ProjectsPage() {
   const [activeCategory, setActiveCategory] = useState<'all' | 'ongoing' | 'completed' | 'upcoming'>("all");
   const [selectedProject, setSelectedProject] = useState<OngoingProject | CompletedProject | UpcomingProject | null>(null);
   const [filteredProjects, setFilteredProjects] = useState<(OngoingProject | CompletedProject | UpcomingProject)[]>([]);
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const headerRef = useRef<HTMLElement | null>(null);
-  const projectsRef = useRef<HTMLElement | null>(null);
   
   useEffect(() => {
-    // Register ScrollTrigger plugin
-    gsap.registerPlugin(ScrollTrigger);
-    
-    // Initialize animations
-    initAnimations();
-    
     const allProjects = [
       ...projectsData.ongoing,
       ...projectsData.completed,
       ...projectsData.upcoming
     ];
     setFilteredProjects(allProjects);
-    
-    return () => {
-      // Kill all ScrollTriggers on component unmount
-      ScrollTrigger.getAll().forEach((trigger: ScrollTrigger) => trigger.kill());
-    };
   }, []);
-  
-  useEffect(() => {
-    // Re-initialize animations when filtered projects change
-    initAnimations();
-  }, [filteredProjects]);
-  
-  const initAnimations = () => {
-    // Header parallax effect
-    gsap.to(".parallax-bg", {
-      scrollTrigger: {
-        trigger: headerRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: true
-      },
-      y: (_i: number, target: Element) => -ScrollTrigger.maxScroll(window) * parseFloat((target as HTMLElement).dataset.speed || "0"),
-      ease: "none"
-    });
-    
-    // Animate project cards
-    gsap.from(".project-card", {
-      scrollTrigger: {
-        trigger: projectsRef.current,
-        start: "top 80%",
-      },
-      y: 50,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.2
-    });
-  };
   
   const handleCategoryChange = (category: 'all' | 'ongoing' | 'completed' | 'upcoming') => {
     setActiveCategory(category);
@@ -423,15 +446,21 @@ export default function ProjectsPage() {
   return (
     <>
       {/* Hero Header */}
-      <section 
-        ref={headerRef}
-        className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20"
-      >
-        {/* Parallax background layers */}
-        <div className="absolute inset-0 z-0">
-          <div className="parallax-bg absolute inset-0 bg-circuit-pattern opacity-10" data-speed="0.2"></div>
-          <div className="parallax-bg absolute inset-0 bg-gradient-to-b from-dark-100/0 to-dark-100 z-10"></div>
-        </div>
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
+        {/* Animated background layers */}
+        <motion.div 
+          className="absolute inset-0 z-0 bg-circuit-pattern opacity-10"
+          animate={{
+            backgroundPosition: ["0% 0%", "100% 100%"],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "linear"
+          }}
+        />
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-dark-100/0 to-dark-100"></div>
         
         {/* Glowing grid lines */}
         <div className="absolute inset-0 z-0">
@@ -441,22 +470,50 @@ export default function ProjectsPage() {
         {/* Content */}
         <div className="container-custom relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            variants={headerVariants}
+            initial="hidden"
+            animate="visible"
             className="text-center"
           >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              <span className="text-glow-cyan">Our</span>{" "}
-              <span className="gradient-text">Projects</span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+            <motion.h1 
+              className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <motion.span 
+                className="text-glow-cyan inline-block"
+                variants={textVariants}
+                custom={0}
+              >
+                Our
+              </motion.span>
+              <span className="inline-block mx-2"> </span>
+              <motion.span 
+                className="gradient-text inline-block"
+                variants={textVariants}
+                custom={1}
+              >
+                Projects
+              </motion.span>
+            </motion.h1>
+            <motion.p 
+              className="text-xl text-gray-300 max-w-3xl mx-auto mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
               Explore our innovative robotics projects that combine cutting-edge technology 
               with practical applications to solve real-world challenges.
-            </p>
+            </motion.p>
             
             {/* Category navigation */}
-            <div className="flex flex-wrap justify-center gap-4 mt-8">
+            <motion.div 
+              className="flex flex-wrap justify-center gap-4 mt-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
               {["all", "upcoming", "ongoing", "completed"].map((category, index) => (
                 <motion.button
                   key={index}
@@ -466,36 +523,49 @@ export default function ProjectsPage() {
                       ? "bg-gradient-to-r from-primary to-secondary text-dark shadow-neon-glow"
                       : "bg-dark-300 text-gray-300 hover:bg-dark-200"
                   }`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  variants={itemVariants}
+                  whileHover={{ 
+                    scale: 1.1,
+                    rotate: [0, -5, 5, -5, 0],
+                    transition: { duration: 0.5 }
+                  }}
+                  whileTap={{ scale: 0.9 }}
                 >
                   {index === 0 ? "All" : category.charAt(0).toUpperCase() + category.slice(1)}
                 </motion.button>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         </div>
         
         {/* Animated scroll indicator */}
         <motion.div
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-          initial={{ opacity: 0, y: -10 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 
-            duration: 1, 
-            delay: 1,
-            repeat: Infinity,
-            repeatType: "reverse",
-            repeatDelay: 0.5
+            duration: 0.8, 
+            delay: 1.2
           }}
         >
           <div className="flex flex-col items-center">
-            <span className="text-sm text-gray-400 mb-2">Scroll to explore</span>
+            <motion.span 
+              className="text-sm text-gray-400 mb-2"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              Scroll to explore
+            </motion.span>
             <div className="w-6 h-10 rounded-full border-2 border-primary flex items-start justify-center p-1">
               <motion.div 
                 className="w-1.5 h-1.5 bg-primary rounded-full"
                 animate={{ 
-                  y: [0, 12, 0],
+                  y: [0, 20, 0],
+                  opacity: [1, 0.5, 1]
                 }}
                 transition={{ 
                   duration: 1.5, 
@@ -509,57 +579,118 @@ export default function ProjectsPage() {
       </section>
       
       {/* Projects Section */}
-      <section 
-        ref={projectsRef}
-        className="relative py-20 bg-dark-100"
-      >
+      <section className="relative py-20 bg-dark-100">
         <div className="container-custom">
           {/* Section heading */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ 
+              type: "spring",
+              stiffness: 100,
+              damping: 15,
+              duration: 0.8 
+            }}
             className="mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold mb-4"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
               <span className="gradient-text">
                 {activeCategory === "all" ? "All" : activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}
               </span> Projects
-            </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mb-6"></div>
-            <p className="text-gray-300 max-w-3xl">
+            </motion.h2>
+            <motion.div 
+              className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mb-6"
+              initial={{ width: 0, opacity: 0 }}
+              whileInView={{ width: 96, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+            ></motion.div>
+            <motion.p 
+              className="text-gray-300 max-w-3xl"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
               {activeCategory === "all" && "All our robotics projects across various stages of development."}
               {activeCategory === "ongoing" && "Current projects our teams are actively developing with cutting-edge technology."}
               {activeCategory === "completed" && "Successfully delivered projects that showcase our technical expertise and innovation."}
               {activeCategory === "upcoming" && "Future initiatives in our development pipeline that push the boundaries of robotics."}
-            </p>
+            </motion.p>
           </motion.div>
           
           {/* Projects grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map((project: OngoingProject | CompletedProject | UpcomingProject, index: number) => (
-              <motion.div
-                key={project.id}
-                className="project-card glass-card rounded-xl overflow-hidden cursor-pointer group"
-                onClick={() => handleProjectClick(project)}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              >
-                <div className="relative h-60 overflow-hidden">
+          <motion.div 
+            key={activeCategory}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <AnimatePresence>
+              {filteredProjects.map((project: OngoingProject | CompletedProject | UpcomingProject, index: number) => (
+                <motion.div
+                  key={project.id}
+                  layout
+                  className="glass-card rounded-xl overflow-hidden cursor-pointer group"
+                  onClick={() => handleProjectClick(project)}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  whileHover={{
+                    scale: 1.03,
+                    y: -8,
+                    transition: {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20
+                    }
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                <motion.div 
+                  className="relative h-60 overflow-hidden"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.4 }}
+                >
                   {/* Placeholder for project image */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-white/50">{project.title}</span>
-                  </div>
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center"
+                    animate={{
+                      opacity: [0.7, 1, 0.7]
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <motion.span 
+                      className="text-2xl font-bold text-white/50"
+                      animate={{ opacity: [0.5, 0.8, 0.5] }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      {project.title}
+                    </motion.span>
+                  </motion.div>
                   {/* Uncomment when images are available */}
                   {/* <Image 
                     src={project.image} 
                     alt={project.title}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="object-cover"
                   /> */}
                   
                   {/* Category badge */}
@@ -590,7 +721,7 @@ export default function ProjectsPage() {
                       {new Date(project.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                     </div>
                   )}
-                </div>
+                </motion.div>
                 
                 <div className="p-6">
                   <h3 className="text-xl font-bold mb-2 group-hover:text-glow-cyan transition-all">
@@ -653,8 +784,9 @@ export default function ProjectsPage() {
                   </div>
                 </div>
               </motion.div>
-            ))}
-          </div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
         </div>
       </section>
       
@@ -665,27 +797,58 @@ export default function ProjectsPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             onClick={closeProjectModal}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", damping: 25 }}
+              initial={{ 
+                scale: 0.8, 
+                opacity: 0,
+                y: 50,
+                rotateX: -15
+              }}
+              animate={{ 
+                scale: 1, 
+                opacity: 1,
+                y: 0,
+                rotateX: 0
+              }}
+              exit={{ 
+                scale: 0.8, 
+                opacity: 0,
+                y: 50,
+                rotateX: 15
+              }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300,
+                damping: 30,
+                mass: 0.8
+              }}
               className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto glass rounded-xl"
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              style={{ perspective: 1000 }}
             >
               {/* Close button */}
-              <button
+              <motion.button
                 onClick={closeProjectModal}
                 className="absolute top-4 right-4 w-8 h-8 rounded-full bg-dark-300 flex items-center justify-center text-gray-400 hover:text-white z-10"
+                whileHover={{ 
+                  scale: 1.1,
+                  rotate: 90,
+                  backgroundColor: "rgba(255, 0, 0, 0.2)"
+                }}
+                whileTap={{ scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
-              </button>
+              </motion.button>
               
               {/* Project header */}
               <div className="relative h-64 md:h-80 overflow-hidden">
@@ -716,17 +879,36 @@ export default function ProjectsPage() {
               </div>
               
               {/* Project content */}
-              <div className="p-6 md:p-8">
+              <motion.div 
+                className="p-6 md:p-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
                 {/* Description */}
-                <div className="mb-8">
+                <motion.div 
+                  className="mb-8"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                >
                   <h3 className="text-xl font-semibold mb-4 text-glow-violet">About the Project</h3>
                   <p className="text-gray-300">{selectedProject.description}</p>
-                </div>
+                </motion.div>
                 
                 {/* Project details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                >
                   {/* Timeline */}
-                  <div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6, duration: 0.5 }}
+                  >
                     <h3 className="text-lg font-semibold mb-4 text-glow-cyan">Timeline</h3>
                     <div className="glass-card p-4 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
@@ -772,10 +954,14 @@ export default function ProjectsPage() {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                   
                   {/* Technologies */}
-                  <div>
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7, duration: 0.5 }}
+                  >
                     <h3 className="text-lg font-semibold mb-4 text-glow-violet">Technologies</h3>
                     <div className="glass-card p-4 rounded-lg">
                       <div className="flex flex-wrap gap-2">
@@ -789,15 +975,27 @@ export default function ProjectsPage() {
                         ))}
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
                 
                 {/* Team members */}
-                <div className="mb-8">
+                <motion.div 
+                  className="mb-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8, duration: 0.5 }}
+                >
                   <h3 className="text-lg font-semibold mb-4 text-glow-cyan">Team Members</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {selectedProject.team.map((member: TeamMember, index: number) => (
-                      <div key={index} className="glass-card p-4 rounded-lg flex items-center">
+                      <motion.div 
+                        key={index} 
+                        className="glass-card p-4 rounded-lg flex items-center"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.9 + index * 0.1, duration: 0.4 }}
+                        whileHover={{ scale: 1.05, y: -5 }}
+                      >
                         {/* Placeholder for team member avatar */}
                         <div className="w-12 h-12 rounded-full bg-dark-300 flex items-center justify-center mr-4">
                           <span className="text-lg font-medium">{member.name.charAt(0)}</span>
@@ -814,33 +1012,41 @@ export default function ProjectsPage() {
                           <h4 className="font-medium text-white">{member.name}</h4>
                           <p className="text-xs text-gray-400">{member.role}</p>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
-                </div>
+                </motion.div>
                 
                 {/* Project links */}
                 {'links' in selectedProject && selectedProject.links && (
-                  <div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2, duration: 0.5 }}
+                  >
                     <h3 className="text-lg font-semibold mb-4 text-glow-violet">Project Links</h3>
                     <div className="flex flex-wrap gap-4">
                       {'links' in selectedProject && selectedProject.links.github && (
-                        <a 
+                        <motion.a 
                           href={selectedProject.links.github} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex items-center px-4 py-2 bg-dark-300 rounded-lg text-white hover:bg-dark-200 transition-colors"
+                          whileHover={{ scale: 1.05, x: 5 }}
+                          whileTap={{ scale: 0.95 }}
                         >
                           <Github className="w-5 h-5 mr-2" />
                           GitHub Repository
-                        </a>
+                        </motion.a>
                       )}
                       {'links' in selectedProject && selectedProject.links.demo && (
-                        <a 
+                        <motion.a 
                           href={selectedProject.links.demo} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="flex items-center px-4 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg text-white hover:from-primary/30 hover:to-secondary/30 transition-colors"
+                          whileHover={{ scale: 1.05, x: 5 }}
+                          whileTap={{ scale: 0.95 }}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 mr-2">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
@@ -848,12 +1054,12 @@ export default function ProjectsPage() {
                             <line x1="10" y1="14" x2="21" y2="3"/>
                           </svg>
                           Live Demo
-                        </a>
+                        </motion.a>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 )}
-              </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         )}

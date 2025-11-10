@@ -17,7 +17,7 @@ interface Blog {
   slug: string;
 }
 
-export default function Blog() {
+export default function BlogPage() {
   const sectionRef = useRef<HTMLElement>(null);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,10 +28,8 @@ export default function Blog() {
       try {
         const res = await fetch("/api/blogdata");
         const data = await res.json();
-        console.log("✅ Blogs fetched:", data);
         setBlogs(data);
       } catch (error) {
-        console.error("❌ Error fetching blogs:", error);
       } finally {
         setLoading(false);
       }
@@ -48,7 +46,7 @@ export default function Blog() {
 
       gsap.from(".blog-card", {
         y: 50,
-        opacity: 1,
+        opacity: 0,
         duration: 0.8,
         stagger: 0.2,
         scrollTrigger: {
@@ -88,9 +86,8 @@ export default function Blog() {
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent">
-              Latest
+              BLOGS
             </span>{" "}
-            Articles
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mb-6"></div>
           <p className="text-gray-400 max-w-2xl mx-auto">
@@ -99,7 +96,7 @@ export default function Blog() {
         </motion.div>
 
         {/* Blog posts grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogs.map((post, index) => (
             <motion.div
               key={index}
@@ -109,7 +106,7 @@ export default function Blog() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-52 overflow-hidden">
                 {post.image ? (
                   <img
                     src={post.image}
@@ -178,33 +175,6 @@ export default function Blog() {
           ))}
         </div>
 
-        {/* View all button */}
-        <div className="text-center mt-12">
-          <motion.a
-            href="/blog"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="inline-flex items-center px-6 py-3 bg-transparent border border-cyan-500 rounded-full text-cyan-400 hover:bg-cyan-500/10 hover:shadow-[0_0_20px_-5px_rgba(59,130,246,0.6)] transition-all duration-300"
-          >
-            View All Articles
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"
-              ></path>
-            </svg>
-          </motion.a>
-        </div>
       </div>
     </section>
   );
