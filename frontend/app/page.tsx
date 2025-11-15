@@ -75,16 +75,16 @@ export default function Home() {
         <About />
         
         {/* Projects Section */}
-        <Projects />
+        {/* <Projects /> */}
         
         {/* Events Section */}
-        <Events />
+        {/* <Events /> */}
         
         {/* Blog Section */}
-        <Blog />
+        {/* <Blog /> */}
         
         {/* Gallery Section */}
-        <Gallery />
+        {/* <Gallery /> */}
         
         {/* Footer */}
         <Footer />
