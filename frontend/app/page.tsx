@@ -15,27 +15,17 @@ const Hero = dynamic(() => import("../components/sections/hero"), {
   loading: () => <div className="min-h-screen"></div>
 });
 
-const About = dynamic(() => import("../components/sections/about"), {
+const AboutPreview = dynamic(() => import("../components/sections/about-preview"), {
   ssr: false,
   loading: () => <div className="min-h-screen"></div>
 });
 
-const Projects = dynamic(() => import("../components/sections/projects"), {
+const FeaturesPreview = dynamic(() => import("../components/sections/features-preview"), {
   ssr: false,
   loading: () => <div className="min-h-screen"></div>
 });
 
-const Events = dynamic(() => import("../components/sections/events"), {
-  ssr: false,
-  loading: () => <div className="min-h-screen"></div>
-});
-
-const Blog = dynamic(() => import("../components/sections/blog"), {
-  ssr: false,
-  loading: () => <div className="min-h-screen"></div>
-});
-
-const Gallery = dynamic(() => import("../components/sections/gallery"), {
+const CTASection = dynamic(() => import("../components/sections/cta-section"), {
   ssr: false,
   loading: () => <div className="min-h-screen"></div>
 });
@@ -71,20 +61,14 @@ export default function Home() {
         {/* Hero Section */}
         <Hero />
         
-        {/* About Section */}
-        <About />
+        {/* About Preview Section */}
+        <AboutPreview />
         
-        {/* Projects Section */}
-        <Projects />
+        {/* Features Preview - Quick Links to all pages */}
+        <FeaturesPreview />
         
-        {/* Events Section */}
-        <Events />
-        
-        {/* Blog Section */}
-        <Blog />
-        
-        {/* Gallery Section */}
-        <Gallery />
+        {/* Call to Action Section */}
+        <CTASection />
         
         {/* Footer */}
         <Footer />

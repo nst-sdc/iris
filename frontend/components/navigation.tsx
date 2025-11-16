@@ -9,12 +9,11 @@ const navItems = [
   { label: "Home", href: "/" },
   { label: "About", href: "/#about" },
   { label: "Projects", href: "/projects" },
-  { label: "Team", href: "/team" },
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
-  { label: "Loading Demo", href: "/loading-demo" },
+  
 ];
 
 export default function Navigation() {
@@ -86,7 +85,7 @@ export default function Navigation() {
             className="ml-4"
           >
             <Link
-              href="#join"
+              href="/contact"
               className="px-5 py-2 bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-medium hover:shadow-neon-glow transition-all duration-300"
             >
               Join Us
@@ -130,7 +129,7 @@ export default function Navigation() {
                 </Link>
               ))}
               <Link
-                href="#join"
+                href="/contact"
                 className="px-5 py-2 bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-medium text-center mt-2"
                 onClick={() => setMobileMenuOpen(false)}
               >
