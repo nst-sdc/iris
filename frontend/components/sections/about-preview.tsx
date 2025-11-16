@@ -1,77 +1,99 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
+import CircuitLines from "../ui/circuit-lines";
+import FloatingIcons from "../ui/floating-icons";
+import DataStream from "../ui/data-stream";
+import HexagonGrid from "../ui/hexagon-grid";
 
 export default function AboutPreview() {
   return (
-    <section id="about" className="relative py-20 md:py-32 overflow-hidden">
-      <div className="container-custom">
-        {/* Section heading */}
+    <section id="about" className="relative py-16 sm:py-20 md:py-24 lg:py-32 overflow-hidden bg-black">
+      {/* Animated background layers */}
+      <CircuitLines />
+      <FloatingIcons />
+      <DataStream />
+      <HexagonGrid />
+      
+      <div className="container-custom max-w-6xl relative z-10 px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="gradient-text">About</span> IRIS Robotics Club
-          </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-6"></div>
-        </motion.div>
-        
-        {/* Simplified content */}
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="glass-card p-8 md:p-12 rounded-xl text-center"
-          >
-            <h3 className="text-2xl font-semibold text-glow-cyan mb-6">
-              Empowering Innovators to Design a Smarter World
-            </h3>
-            <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-              IRIS Robotics Club is dedicated to fostering innovation and technical excellence 
-              in the field of robotics. We provide a collaborative environment where students 
-              can explore cutting-edge technologies, develop practical skills, and create 
-              solutions that address real-world challenges.
-            </p>
-            
-            {/* Quick stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold gradient-text mb-1">150+</div>
-                <div className="text-sm text-gray-400">Members</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold gradient-text mb-1">50+</div>
-                <div className="text-sm text-gray-400">Projects</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold gradient-text mb-1">15+</div>
-                <div className="text-sm text-gray-400">Competitions</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold gradient-text mb-1">30+</div>
-                <div className="text-sm text-gray-400">Workshops</div>
-              </div>
+          <div className="mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-4 text-white">
+              About IRIS
+            </h2>
+            <div className="max-w-3xl space-y-4">
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                IRIS is the robotics club of Newton School of Technology, Ajeenkya DY Patil University. 
+                We're a community of students who love building cool robots and experimenting with technology.
+              </p>
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                From autonomous drones to AI-powered systems, we work on projects that push the boundaries 
+                of what's possible. Whether you're a complete beginner or already know your way around circuits 
+                and code, there's a place for you here.
+              </p>
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                We participate in competitions, host workshops, and collaborate on projects that matter. 
+                It's not just about robots—it's about learning, growing, and having fun while doing it.
+              </p>
             </div>
-            
-            {/* CTA */}
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-transparent border border-primary rounded-full text-primary hover:bg-primary/10 hover:shadow-neon-cyan transition-all duration-300"
+          </div>
+          
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-4 sm:p-6"
             >
-              Explore Our Projects
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </Link>
-          </motion.div>
-        </div>
+              <div className="text-2xl sm:text-3xl font-semibold text-white mb-1">20+</div>
+              <div className="text-xs sm:text-sm text-gray-400">Active Members</div>
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent pointer-events-none" />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.2 }}
+              className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-4 sm:p-6"
+            >
+              <div className="text-2xl sm:text-3xl font-semibold text-white mb-1">5+</div>
+              <div className="text-xs sm:text-sm text-gray-400">Projects Built</div>
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-transparent pointer-events-none" />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+              className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-4 sm:p-6"
+            >
+              <div className="text-2xl sm:text-3xl font-semibold text-white mb-1">5+</div>
+              <div className="text-xs sm:text-sm text-gray-400">Competitions Won</div>
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-transparent pointer-events-none" />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-4 sm:p-6"
+            >
+              <div className="text-2xl sm:text-3xl font-semibold text-white mb-1">3+</div>
+              <div className="text-xs sm:text-sm text-gray-400">Workshops Held</div>
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-transparent pointer-events-none" />
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

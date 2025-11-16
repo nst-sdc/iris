@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Roboto_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import { ThemeProvider } from "../components/theme-provider";
 import SmoothScroll from "../components/smooth-scroll";
 import Navigation from "../components/navigation";
@@ -7,15 +7,10 @@ import { RouteChangeProvider } from "../components/route-change-provider";
 import "./globals.css";
 
 const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
   variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const robotoMono = Roboto_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -32,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${robotoMono.variable} antialiased bg-dark text-foreground`}
+        className={`${inter.variable} antialiased bg-dark text-foreground font-inter`}
       >
         <ThemeProvider
           attribute="class"

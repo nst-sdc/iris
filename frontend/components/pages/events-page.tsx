@@ -774,8 +774,8 @@ export default function EventsPage() {
                         }}
                         className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 ${
                           activeFilter === status
-                            ? "bg-gradient-to-r from-primary to-secondary text-dark shadow-neon-glow"
-                            : "bg-dark-300 text-gray-300 hover:bg-dark-200"
+                            ? "bg-white text-black hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]"
+                            : "bg-zinc-800/50 text-gray-300 border border-zinc-700/50 hover:bg-zinc-700/50 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                         }`}
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.95 }}
@@ -803,8 +803,8 @@ export default function EventsPage() {
                         }}
                         className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-300 ${
                           activeType === type
-                            ? "bg-gradient-to-r from-primary to-secondary text-dark shadow-neon-glow"
-                            : "bg-dark-300 text-gray-300 hover:bg-dark-200"
+                            ? "bg-white text-black hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]"
+                            : "bg-zinc-800/50 text-gray-300 border border-zinc-700/50 hover:bg-zinc-700/50 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                         }`}
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.95 }}
@@ -827,7 +827,7 @@ export default function EventsPage() {
                 {(activeFilter !== 'All' || activeType !== 'All' || searchQuery) && (
                   <motion.button
                     onClick={resetFilters}
-                    className="px-4 py-2 bg-dark-300 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-dark-200 transition-colors text-primary"
+                    className="px-4 py-2 bg-zinc-800/50 rounded-lg text-sm font-medium flex items-center gap-2 border border-zinc-700/50 text-cyan-400 hover:bg-zinc-700/50 hover:shadow-[0_0_15px_rgba(0,245,255,0.2)] transition-all duration-300"
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -843,7 +843,7 @@ export default function EventsPage() {
                 {/* View toggle */}
                 <motion.button
                   onClick={toggleViewMode}
-                  className="px-4 py-2 bg-dark-300 rounded-lg text-sm font-medium flex items-center gap-2 hover:bg-dark-200 transition-colors"
+                  className="px-4 py-2 bg-zinc-800/50 rounded-lg text-sm font-medium flex items-center gap-2 border border-zinc-700/50 hover:bg-zinc-700/50 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)] transition-all duration-300"
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -1441,7 +1441,7 @@ export default function EventsPage() {
             </p>
             <motion.a
               href="#"
-              className="inline-block px-8 py-4 bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-medium hover:shadow-neon-glow transition-all duration-300"
+              className="inline-block px-8 py-4 bg-white text-black rounded-lg font-medium hover:shadow-[0_0_25px_rgba(0,245,255,0.3)] transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

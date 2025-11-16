@@ -73,73 +73,67 @@ export default function Projects() {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative py-20 md:py-32 bg-dark-100"
+      className="relative py-16 sm:py-20 md:py-24 lg:py-32 bg-black overflow-hidden"
     >
-      <div className="container-custom">
+      <div className="container-custom max-w-6xl relative z-10 px-4 sm:px-6">
         {/* Section heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="mb-12 sm:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="gradient-text">Featured</span> Projects
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
+            Featured Projects
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-6"></div>
-          <p className="text-gray-300 max-w-2xl mx-auto">
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl">
             Explore our innovative robotics projects that combine cutting-edge technology 
-            with practical applications to solve real-world challenges.
+            with practical applications.
           </p>
         </motion.div>
         
         {/* Projects grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {projects.map((project, index) => (
             <motion.div
               key={project.id}
-              className="project-card glass-card rounded-xl overflow-hidden hover-lift group"
+              className="project-card group block relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 hover:bg-zinc-900/50 hover:border-zinc-700/50 transition-all duration-300"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="relative h-60 overflow-hidden">
+              <div className="relative h-48 sm:h-60 overflow-hidden">
                 {/* Placeholder for project image */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white/50">{project.title}</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-violet-500/10 flex items-center justify-center">
+                  <span className="text-xl sm:text-2xl font-bold text-white/40">{project.title}</span>
                 </div>
-                {/* Uncomment when images are available */}
-                {/* <Image 
-                  src={project.image} 
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                /> */}
-                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-dark/80 text-xs font-medium text-primary">
+                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/70 text-xs font-medium text-cyan-400">
                   {project.category}
                 </div>
               </div>
               
-              <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 group-hover:text-glow-cyan transition-all">
+              <div className="p-6 sm:p-8">
+                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white group-hover:text-cyan-400 transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-gray-400 mb-4">
+                <p className="text-gray-400 text-sm sm:text-base mb-4 line-clamp-2">
                   {project.description}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
                     <span 
                       key={tag} 
-                      className="px-2 py-1 rounded-full text-xs font-medium bg-dark-300 text-gray-300"
+                      className="px-2 py-1 rounded-full text-xs font-medium bg-zinc-800/50 border border-zinc-700/50 text-gray-300"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
+              
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-violet-500/0 group-hover:from-cyan-500/5 group-hover:to-violet-500/5 transition-all duration-500 pointer-events-none" />
             </motion.div>
           ))}
         </div>
@@ -152,7 +146,7 @@ export default function Projects() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="inline-flex items-center px-6 py-3 bg-transparent border border-primary rounded-full text-primary hover:bg-primary/10 hover:shadow-neon-cyan transition-all duration-300"
+            className="inline-flex items-center px-6 py-3 bg-white text-black rounded-lg font-medium shadow-[0_0_15px_rgba(0,245,255,0.15)] hover:shadow-[0_0_35px_rgba(0,245,255,0.5)] hover:bg-cyan-50 transition-all duration-300"
           >
             View All Projects
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

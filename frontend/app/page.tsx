@@ -51,10 +51,7 @@ export default function Home() {
     <>
       {loading && <LoadingScreen />}
       
-      <main className="relative overflow-hidden">
-        {/* Circuit pattern background */}
-        <div className="circuit-bg"></div>
-        
+      <main className="relative overflow-hidden bg-black">
         {/* Navigation */}
         <Navigation />
         

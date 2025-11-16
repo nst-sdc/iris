@@ -2,89 +2,107 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Cpu, Calendar, User, Users } from "lucide-react";
+import { Cpu, Calendar, FileText, Image } from "lucide-react";
+import CircuitLines from "../ui/circuit-lines";
+import FloatingIcons from "../ui/floating-icons";
+import DataStream from "../ui/data-stream";
+import HexagonGrid from "../ui/hexagon-grid";
 
 const features = [
   {
     icon: Cpu,
-    title: "Innovative Projects",
-    description: "Explore our cutting-edge robotics projects from autonomous drones to robotic arms.",
+    title: "Projects",
+    description: "Autonomous systems, robotics platforms, and hardware innovations.",
     href: "/projects",
-    color: "from-primary/20 to-secondary/20"
   },
   {
     icon: Calendar,
-    title: "Events & Workshops",
-    description: "Join our workshops, competitions, and tech talks to enhance your robotics skills.",
+    title: "Events",
+    description: "Workshops, hackathons, and robotics competitions throughout the year.",
     href: "/events",
-    color: "from-secondary/20 to-primary/20"
   },
   {
-    icon: User,
-    title: "Technical Blogs",
-    description: "Learn from detailed tutorials and insights shared by our team members.",
+    icon: FileText,
+    title: "Blog",
+    description: "Technical articles, tutorials, and project documentation.",
     href: "/blog",
-    color: "from-primary/20 to-secondary/20"
   },
   {
-    icon: Users,
-    title: "Photo Gallery",
-    description: "View moments from our competitions, workshops, and team activities.",
+    icon: Image,
+    title: "Gallery",
+    description: "Photos from builds, events, and team activities.",
     href: "/gallery",
-    color: "from-secondary/20 to-primary/20"
   }
 ];
 
 export default function FeaturesPreview() {
   return (
-    <section className="relative py-20 md:py-32 bg-dark-100">
-      <div className="container-custom">
+    <section className="relative py-16 sm:py-20 md:py-24 lg:py-32 bg-black overflow-hidden">
+      {/* Animated background layers */}
+      <CircuitLines />
+      <FloatingIcons />
+      <DataStream />
+      <HexagonGrid />
+      
+      <div className="container-custom max-w-6xl relative z-10 px-4 sm:px-6">
         {/* Section heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.6 }}
+          className="mb-12 sm:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="gradient-text">Discover</span> What We Offer
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
+            Explore IRIS
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-6"></div>
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            Explore our projects, attend events, read technical blogs, and view our gallery
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl">
+            From building robots to competing globally, discover what drives our community.
           </p>
         </motion.div>
         
         {/* Features grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
             >
               <Link
                 href={feature.href}
-                className="block glass-card rounded-xl p-6 hover-lift group h-full"
+                className="group block relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 hover:bg-zinc-900/50 hover:border-zinc-700/50 transition-all duration-300 p-6 sm:p-8"
               >
-                <div className={`w-14 h-14 rounded-lg bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <feature.icon className="w-7 h-7 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold mb-2 group-hover:text-glow-cyan transition-all">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 mb-4 text-sm">
-                  {feature.description}
-                </p>
-                <div className="flex items-center text-primary text-sm font-medium">
-                  Explore
-                  <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                {/* Icon */}
+                <div className="flex items-start justify-between mb-6">
+                  <div className="w-12 h-12 rounded-xl bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center group-hover:bg-zinc-800 group-hover:border-zinc-600/50 transition-all duration-300">
+                    <feature.icon className="w-6 h-6 text-zinc-400 group-hover:text-white transition-colors duration-300" strokeWidth={1.5} />
+                  </div>
+                  <svg 
+                    className="w-5 h-5 text-zinc-600 group-hover:text-zinc-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7V17" />
                   </svg>
                 </div>
+                
+                {/* Content */}
+                <div>
+                  <h3 className="text-xl font-semibold mb-2 text-white group-hover:text-white transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 text-[15px] leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+
+                {/* Subtle hover effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-violet-500/0 group-hover:from-cyan-500/5 group-hover:to-violet-500/5 transition-all duration-500 pointer-events-none" />
               </Link>
             </motion.div>
           ))}

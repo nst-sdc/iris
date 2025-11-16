@@ -446,344 +446,113 @@ export default function ProjectsPage() {
   return (
     <>
       {/* Hero Header */}
-      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden pt-20">
-        {/* Animated background layers */}
-        <motion.div 
-          className="absolute inset-0 z-0 bg-circuit-pattern opacity-10"
-          animate={{
-            backgroundPosition: ["0% 0%", "100% 100%"],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "linear"
-          }}
-        />
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-dark-100/0 to-dark-100"></div>
-        
-        {/* Glowing grid lines */}
-        <div className="absolute inset-0 z-0">
-          <div className="grid-lines"></div>
-        </div>
-        
-        {/* Content */}
-        <div className="container-custom relative z-10">
+      <section className="relative bg-black pt-32 pb-12 sm:pb-16">
+        <div className="container-custom max-w-6xl relative z-10 px-4 sm:px-6">
           <motion.div
-            variants={headerVariants}
-            initial="hidden"
-            animate="visible"
-            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="mb-8 sm:mb-12"
           >
-            <motion.h1 
-              className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.span 
-                className="text-glow-cyan inline-block"
-                variants={textVariants}
-                custom={0}
+            <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-white">
+              Explore Our Projects
+            </h1>
+            <p className="text-gray-400 text-base sm:text-lg max-w-3xl">
+              A showcase of our passion for innovation and robotics engineering.
+            </p>
+          </motion.div>
+          
+          {/* Category Chips */}
+          <motion.div 
+            className="flex gap-3 overflow-x-auto pb-3"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            {["all", "ongoing", "completed", "upcoming"].map((category, index) => (
+              <button
+                key={index}
+                onClick={() => handleCategoryChange(category as 'all' | 'ongoing' | 'completed' | 'upcoming')}
+                className={`flex h-9 shrink-0 items-center justify-center rounded-full px-4 transition-all duration-300 ${
+                  activeCategory === category
+                    ? "bg-cyan-400 text-black font-bold"
+                    : "bg-zinc-800/80 text-white hover:bg-cyan-400/20 border border-zinc-700/50"
+                }`}
               >
-                Our
-              </motion.span>
-              <span className="inline-block mx-2"> </span>
-              <motion.span 
-                className="gradient-text inline-block"
-                variants={textVariants}
-                custom={1}
-              >
-                Projects
-              </motion.span>
-            </motion.h1>
-            <motion.p 
-              className="text-xl text-gray-300 max-w-3xl mx-auto mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-            >
-              Explore our innovative robotics projects that combine cutting-edge technology 
-              with practical applications to solve real-world challenges.
-            </motion.p>
-            
-            {/* Category navigation */}
-            <motion.div 
-              className="flex flex-wrap justify-center gap-4 mt-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {["all", "upcoming", "ongoing", "completed"].map((category, index) => (
-                <motion.button
-                  key={index}
-                  onClick={() => handleCategoryChange(category as 'all' | 'ongoing' | 'completed' | 'upcoming')}
-                  className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
-                    activeCategory === category
-                      ? "bg-gradient-to-r from-primary to-secondary text-dark shadow-neon-glow"
-                      : "bg-dark-300 text-gray-300 hover:bg-dark-200"
-                  }`}
-                  variants={itemVariants}
-                  whileHover={{ 
-                    scale: 1.1,
-                    rotate: [0, -5, 5, -5, 0],
-                    transition: { duration: 0.5 }
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {index === 0 ? "All" : category.charAt(0).toUpperCase() + category.slice(1)}
-                </motion.button>
-              ))}
-            </motion.div>
+                <p className="text-sm font-medium capitalize">{category}</p>
+              </button>
+            ))}
           </motion.div>
         </div>
-        
-        {/* Animated scroll indicator */}
-        <motion.div
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.8, 
-            delay: 1.2
-          }}
-        >
-          <div className="flex flex-col items-center">
-            <motion.span 
-              className="text-sm text-gray-400 mb-2"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ 
-                duration: 2, 
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            >
-              Scroll to explore
-            </motion.span>
-            <div className="w-6 h-10 rounded-full border-2 border-primary flex items-start justify-center p-1">
-              <motion.div 
-                className="w-1.5 h-1.5 bg-primary rounded-full"
-                animate={{ 
-                  y: [0, 20, 0],
-                  opacity: [1, 0.5, 1]
-                }}
-                transition={{ 
-                  duration: 1.5, 
-                  repeat: Infinity,
-                  ease: "easeInOut" 
-                }}
-              />
-            </div>
-          </div>
-        </motion.div>
       </section>
       
       {/* Projects Section */}
-      <section className="relative py-20 bg-dark-100">
-        <div className="container-custom">
-          {/* Section heading */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ 
-              type: "spring",
-              stiffness: 100,
-              damping: 15,
-              duration: 0.8 
-            }}
-            className="mb-12"
-          >
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold mb-4"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-            >
-              <span className="gradient-text">
-                {activeCategory === "all" ? "All" : activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}
-              </span> Projects
-            </motion.h2>
-            <motion.div 
-              className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mb-6"
-              initial={{ width: 0, opacity: 0 }}
-              whileInView={{ width: 96, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-            ></motion.div>
-            <motion.p 
-              className="text-gray-300 max-w-3xl"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
-              {activeCategory === "all" && "All our robotics projects across various stages of development."}
-              {activeCategory === "ongoing" && "Current projects our teams are actively developing with cutting-edge technology."}
-              {activeCategory === "completed" && "Successfully delivered projects that showcase our technical expertise and innovation."}
-              {activeCategory === "upcoming" && "Future initiatives in our development pipeline that push the boundaries of robotics."}
-            </motion.p>
-          </motion.div>
-          
+      <section className="relative py-8 sm:py-12 bg-black">
+        <div className="container-custom max-w-6xl relative z-10 px-4 sm:px-6">
           {/* Projects grid */}
           <motion.div 
             key={activeCategory}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
           >
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
               {filteredProjects.map((project: OngoingProject | CompletedProject | UpcomingProject, index: number) => (
                 <motion.div
                   key={project.id}
                   layout
-                  className="glass-card rounded-xl overflow-hidden cursor-pointer group"
+                  className="flex flex-col gap-4 p-5 rounded-xl bg-white/5 border border-transparent hover:border-cyan-400/50 transition-all duration-300 group cursor-pointer"
                   onClick={() => handleProjectClick(project)}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  whileHover={{
-                    scale: 1.03,
-                    y: -8,
-                    transition: {
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 20
-                    }
-                  }}
-                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
                 >
-                <motion.div 
-                  className="relative h-60 overflow-hidden"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {/* Placeholder for project image */}
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center"
-                    animate={{
-                      opacity: [0.7, 1, 0.7]
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <motion.span 
-                      className="text-2xl font-bold text-white/50"
-                      animate={{ opacity: [0.5, 0.8, 0.5] }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    >
+                  {/* Project Image */}
+                  <div className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-violet-500/10 flex items-center justify-center">
+                      <span className="text-lg sm:text-xl font-bold text-white/40 px-4 text-center">{project.title}</span>
+                    </div>
+                    
+                    {/* Category badge */}
+                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/70 backdrop-blur-sm text-xs font-medium text-cyan-400">
+                      {project.category}
+                    </div>
+                    
+                    {/* Progress indicator for ongoing projects */}
+                    {'progress' in project && (
+                      <div className="absolute bottom-3 left-3 right-3">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs text-white/80">Progress</span>
+                          <span className="text-xs text-white/80">{project.progress}%</span>
+                        </div>
+                        <div className="w-full h-1 bg-zinc-800/50 rounded-full overflow-hidden backdrop-blur-sm">
+                          <div 
+                            className="h-full bg-cyan-400"
+                            style={{ width: `${project.progress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Project Content */}
+                  <div className="flex flex-col gap-3">
+                    <h3 className="text-white text-xl font-bold leading-normal group-hover:text-cyan-400 transition-colors">
                       {project.title}
-                    </motion.span>
-                  </motion.div>
-                  {/* Uncomment when images are available */}
-                  {/* <Image 
-                    src={project.image} 
-                    alt={project.title}
-                    fill
-                    className="object-cover"
-                  /> */}
-                  
-                  {/* Category badge */}
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-dark/80 text-xs font-medium text-primary">
-                    {project.category}
+                    </h3>
+                    <p className="text-gray-400 text-sm font-normal leading-normal min-h-[60px]">
+                      {project.description}
+                    </p>
+                    <div className="inline-flex items-center gap-2 text-cyan-400 text-sm font-bold leading-normal group-hover:underline">
+                      View Details 
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform group-hover:translate-x-1">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </div>
                   </div>
-                  
-                  {/* Progress indicator for ongoing projects */}
-                  {activeCategory === "ongoing" && 'progress' in project && (
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-white/80">Progress</span>
-                        <span className="text-xs text-white/80">{project.progress}%</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-dark-300 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gradient-to-r from-primary to-secondary"
-                          style={{ width: `${project.progress}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Date badge for upcoming projects */}
-                  {activeCategory === "upcoming" && (
-                    <div className="absolute bottom-4 right-4 px-3 py-1 rounded-full bg-dark/80 text-xs font-medium text-secondary flex items-center">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      {new Date(project.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                    </div>
-                  )}
                 </motion.div>
-                
-                <div className="p-6">
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-glow-cyan transition-all">
-                    {project.title}
-                  </h3>
-                  <p className="text-gray-400 mb-4 line-clamp-2">
-                    {project.description}
-                  </p>
-                  
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.map((tag: string) => (
-                      <span 
-                        key={tag} 
-                        className="px-2 py-1 rounded-full text-xs font-medium bg-dark-300 text-gray-300"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  {/* Team members preview */}
-                  <div className="flex items-center mt-4">
-                    <div className="flex -space-x-2">
-                      {project.team.slice(0, 3).map((member: TeamMember, i: number) => (
-                        <div 
-                          key={i} 
-                          className="w-8 h-8 rounded-full border-2 border-dark-100 bg-dark-300 flex items-center justify-center overflow-hidden"
-                          title={member.name}
-                        >
-                          {/* Placeholder for team member avatar */}
-                          <span className="text-xs font-medium">{member.name.charAt(0)}</span>
-                          {/* Uncomment when avatars are available */}
-                          {/* <Image 
-                            src={member.avatar} 
-                            alt={member.name}
-                            width={32}
-                            height={32}
-                            className="object-cover"
-                          /> */}
-                        </div>
-                      ))}
-                      {project.team.length > 3 && (
-                        <div className="w-8 h-8 rounded-full border-2 border-dark-100 bg-dark-300 flex items-center justify-center">
-                          <span className="text-xs font-medium">+{project.team.length - 3}</span>
-                        </div>
-                      )}
-                    </div>
-                    <span className="ml-3 text-xs text-gray-400">
-                      {project.team.length} team member{project.team.length !== 1 ? 's' : ''}
-                    </span>
-                  </div>
-                  
-                  {/* View details indicator */}
-                  <div className="mt-4 pt-4 border-t border-gray-800 flex justify-between items-center">
-                    <span className="text-xs text-primary">View details</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-primary transform group-hover:translate-x-1 transition-transform">
-                      <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                  </div>
-                </div>
-              </motion.div>
               ))}
             </AnimatePresence>
           </motion.div>
@@ -798,47 +567,38 @@ export default function ProjectsPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
             onClick={closeProjectModal}
           >
             <motion.div
               initial={{ 
-                scale: 0.8, 
+                scale: 0.9, 
                 opacity: 0,
-                y: 50,
-                rotateX: -15
+                y: 20
               }}
               animate={{ 
                 scale: 1, 
                 opacity: 1,
-                y: 0,
-                rotateX: 0
+                y: 0
               }}
               exit={{ 
-                scale: 0.8, 
+                scale: 0.9, 
                 opacity: 0,
-                y: 50,
-                rotateX: 15
+                y: 20
               }}
               transition={{ 
                 type: "spring", 
                 stiffness: 300,
-                damping: 30,
-                mass: 0.8
+                damping: 30
               }}
-              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto glass rounded-xl"
+              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-800/50 bg-zinc-900/95 backdrop-blur-xl"
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              style={{ perspective: 1000 }}
             >
               {/* Close button */}
               <motion.button
                 onClick={closeProjectModal}
-                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-dark-300 flex items-center justify-center text-gray-400 hover:text-white z-10"
-                whileHover={{ 
-                  scale: 1.1,
-                  rotate: 90,
-                  backgroundColor: "rgba(255, 0, 0, 0.2)"
-                }}
+                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-800/80 hover:bg-zinc-700 flex items-center justify-center text-gray-400 hover:text-white z-10 transition-colors"
+                whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -851,10 +611,10 @@ export default function ProjectsPage() {
               </motion.button>
               
               {/* Project header */}
-              <div className="relative h-64 md:h-80 overflow-hidden">
+              <div className="relative h-56 sm:h-64 md:h-80 overflow-hidden rounded-t-2xl">
                 {/* Placeholder for project image */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center">
-                  <span className="text-3xl font-bold text-white/70">{selectedProject.title}</span>
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center">
+                  <span className="text-2xl sm:text-3xl font-bold text-white/70 px-4 text-center">{selectedProject.title}</span>
                 </div>
                 {/* Uncomment when images are available */}
                 {/* <Image 
@@ -865,22 +625,22 @@ export default function ProjectsPage() {
                 /> */}
                 
                 {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-dark to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 
                 {/* Project title */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                   <div className="mb-2">
-                    <span className="px-3 py-1 rounded-full bg-dark/80 text-xs font-medium text-primary">
+                    <span className="px-3 py-1 rounded-full bg-black/70 text-xs font-medium text-cyan-400">
                       {selectedProject.category}
                     </span>
                   </div>
-                  <h2 className="text-3xl font-bold text-white text-glow-cyan">{selectedProject.title}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-semibold text-white">{selectedProject.title}</h2>
                 </div>
               </div>
               
               {/* Project content */}
               <motion.div 
-                className="p-6 md:p-8"
+                className="p-6 sm:p-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
@@ -892,13 +652,13 @@ export default function ProjectsPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.4, duration: 0.5 }}
                 >
-                  <h3 className="text-xl font-semibold mb-4 text-glow-violet">About the Project</h3>
-                  <p className="text-gray-300">{selectedProject.description}</p>
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-white">About the Project</h3>
+                  <p className="text-gray-300 text-sm sm:text-base">{selectedProject.description}</p>
                 </motion.div>
                 
                 {/* Project details */}
                 <motion.div 
-                  className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-8"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.5 }}
@@ -909,45 +669,43 @@ export default function ProjectsPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6, duration: 0.5 }}
                   >
-                    <h3 className="text-lg font-semibold mb-4 text-glow-cyan">Timeline</h3>
-                    <div className="glass-card p-4 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Timeline</h3>
+                    <div className="rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-4 sm:p-6">
+                      <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-2 text-primary" />
-                          <span className="text-sm text-gray-300">Start Date</span>
+                          <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+                          <span className="text-xs sm:text-sm text-gray-300">Start Date</span>
                         </div>
-                        <span className="text-sm font-medium">
+                        <span className="text-xs sm:text-sm font-medium text-white">
                           {new Date(selectedProject.startDate).toLocaleDateString('en-US', { 
                             year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
+                            month: 'short'
                           })}
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-2 text-secondary" />
-                          <span className="text-sm text-gray-300">End Date</span>
+                          <Calendar className="w-4 h-4 mr-2 text-violet-400" />
+                          <span className="text-xs sm:text-sm text-gray-300">End Date</span>
                         </div>
-                        <span className="text-sm font-medium">
+                        <span className="text-xs sm:text-sm font-medium text-white">
                           {selectedProject.endDate ? new Date(selectedProject.endDate).toLocaleDateString('en-US', { 
                             year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
+                            month: 'short'
                           }) : 'Ongoing'}
                         </span>
                       </div>
                       
                       {/* Progress bar for ongoing projects */}
-                      {activeCategory === "ongoing" && 'progress' in selectedProject && (
+                      {'progress' in selectedProject && (
                         <div className="mt-4">
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-xs text-white/80">Progress</span>
                             <span className="text-xs text-white/80">{selectedProject.progress}%</span>
                           </div>
-                          <div className="w-full h-2 bg-dark-300 rounded-full overflow-hidden">
+                          <div className="w-full h-2 bg-zinc-800/50 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-gradient-to-r from-primary to-secondary"
+                              className="h-full bg-gradient-to-r from-cyan-400 to-blue-500"
                               style={{ width: `${selectedProject.progress}%` }}
                             ></div>
                           </div>
@@ -962,13 +720,13 @@ export default function ProjectsPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.7, duration: 0.5 }}
                   >
-                    <h3 className="text-lg font-semibold mb-4 text-glow-violet">Technologies</h3>
-                    <div className="glass-card p-4 rounded-lg">
+                    <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Technologies</h3>
+                    <div className="rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-4 sm:p-6">
                       <div className="flex flex-wrap gap-2">
                         {selectedProject.tags.map((tag: string) => (
                           <span 
                             key={tag} 
-                            className="px-3 py-1.5 rounded-full text-sm font-medium bg-dark-300 text-primary border border-primary/20 hover:border-primary/50 transition-colors"
+                            className="px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-zinc-800/50 border border-zinc-700/50 text-gray-300 hover:border-cyan-400/50 transition-colors"
                           >
                             {tag}
                           </span>
@@ -985,20 +743,19 @@ export default function ProjectsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8, duration: 0.5 }}
                 >
-                  <h3 className="text-lg font-semibold mb-4 text-glow-cyan">Team Members</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Team Members</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                     {selectedProject.team.map((member: TeamMember, index: number) => (
                       <motion.div 
                         key={index} 
-                        className="glass-card p-4 rounded-lg flex items-center"
-                        initial={{ opacity: 0, scale: 0.8 }}
+                        className="rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-4 flex items-center hover:bg-zinc-900/50 hover:border-zinc-700/50 transition-all duration-300"
+                        initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.9 + index * 0.1, duration: 0.4 }}
-                        whileHover={{ scale: 1.05, y: -5 }}
+                        transition={{ delay: 0.9 + index * 0.05, duration: 0.3 }}
                       >
                         {/* Placeholder for team member avatar */}
-                        <div className="w-12 h-12 rounded-full bg-dark-300 flex items-center justify-center mr-4">
-                          <span className="text-lg font-medium">{member.name.charAt(0)}</span>
+                        <div className="w-12 h-12 rounded-full bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center mr-4 flex-shrink-0">
+                          <span className="text-lg font-medium text-cyan-400">{member.name.charAt(0)}</span>
                           {/* Uncomment when avatars are available */}
                           {/* <Image 
                             src={member.avatar} 
@@ -1009,7 +766,7 @@ export default function ProjectsPage() {
                           /> */}
                         </div>
                         <div>
-                          <h4 className="font-medium text-white">{member.name}</h4>
+                          <h4 className="font-medium text-white text-sm sm:text-base">{member.name}</h4>
                           <p className="text-xs text-gray-400">{member.role}</p>
                         </div>
                       </motion.div>
@@ -1024,19 +781,19 @@ export default function ProjectsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1.2, duration: 0.5 }}
                   >
-                    <h3 className="text-lg font-semibold mb-4 text-glow-violet">Project Links</h3>
-                    <div className="flex flex-wrap gap-4">
+                    <h3 className="text-base sm:text-lg font-semibold mb-4 text-white">Project Links</h3>
+                    <div className="flex flex-wrap gap-3 sm:gap-4">
                       {'links' in selectedProject && selectedProject.links.github && (
                         <motion.a 
                           href={selectedProject.links.github} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center px-4 py-2 bg-dark-300 rounded-lg text-white hover:bg-dark-200 transition-colors"
-                          whileHover={{ scale: 1.05, x: 5 }}
+                          className="flex items-center px-4 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-white hover:bg-zinc-700/50 hover:border-zinc-600/50 transition-all text-sm"
+                          whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
-                          <Github className="w-5 h-5 mr-2" />
-                          GitHub Repository
+                          <Github className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                          GitHub
                         </motion.a>
                       )}
                       {'links' in selectedProject && selectedProject.links.demo && (
@@ -1044,11 +801,11 @@ export default function ProjectsPage() {
                           href={selectedProject.links.demo} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="flex items-center px-4 py-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-lg text-white hover:from-primary/30 hover:to-secondary/30 transition-colors"
-                          whileHover={{ scale: 1.05, x: 5 }}
+                          className="flex items-center px-4 py-2 bg-white text-black rounded-lg font-medium shadow-[0_0_15px_rgba(0,245,255,0.15)] hover:shadow-[0_0_25px_rgba(0,245,255,0.3)] transition-all text-sm"
+                          whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 mr-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 sm:w-5 sm:h-5 mr-2">
                             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                             <polyline points="15 3 21 3 21 9"/>
                             <line x1="10" y1="14" x2="21" y2="3"/>

@@ -224,7 +224,7 @@ export default function ContactUsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               type="submit"
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-secondary text-dark font-semibold py-3 rounded-lg shadow-lg hover:shadow-primary/30 transition-all duration-300"
+              className="w-full flex items-center justify-center gap-2 bg-white text-black font-semibold py-3 rounded-lg hover:shadow-[0_0_25px_rgba(0,245,255,0.3)] transition-all duration-300"
             >
               <Send className="w-5 h-5" />
               Send Message
