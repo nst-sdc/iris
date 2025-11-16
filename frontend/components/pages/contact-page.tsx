@@ -70,7 +70,7 @@ export default function ContactUsPage() {
             transition={{ duration: 1 }}
             className="text-5xl md:text-6xl font-bold mb-6"
           >
-            <span className="text-glow-cyan">Connect with</span>{" "}
+            <span className="text-glow-cyan">Join & Connect with</span>{" "}
             <span className="gradient-text">IRIS Robotics Club</span>
           </motion.h1>
           <motion.p
@@ -79,7 +79,7 @@ export default function ContactUsPage() {
             transition={{ duration: 1, delay: 0.3 }}
             className="text-gray-300 text-lg max-w-2xl mx-auto"
           >
-            Whether you’re a student, collaborator, or robotics enthusiast, we’re always open to ideas and opportunities.
+            Whether you want to join our club, collaborate on projects, or just connect with us, we're always open to ideas and opportunities.
           </motion.p>
         </div>
       </section>
@@ -197,6 +197,7 @@ export default function ContactUsPage() {
                 <option value="" disabled>
                   Select a category
                 </option>
+                <option value="Join the Club">Join the Club</option>
                 <option value="General Inquiry">General Inquiry</option>
                 <option value="Collaboration">Collaboration</option>
                 <option value="Technical Support">Technical Support</option>
