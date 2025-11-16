@@ -47,3 +47,7 @@ Thumbs.db
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# Rust files
+target/
+Cargo.lock
