@@ -369,18 +369,17 @@ export default function GalleryPage() {
               <motion.button
                 key={category}
                 onClick={() => handleCategoryChange(category as GalleryCategory)}
-                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
+                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${
                   activeCategory === category
-                    ? "bg-gradient-to-r from-primary to-secondary text-dark shadow-neon-glow"
-                    : "bg-dark-300 text-gray-300 hover:bg-dark-200"
+                    ? "bg-white text-black hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]"
+                    : "bg-zinc-800/50 text-gray-300 border border-zinc-700/50 hover:bg-zinc-700/50 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                 }`}
                 variants={itemVariants}
                 whileHover={{ 
-                  scale: 1.1,
-                  rotate: [0, -5, 5, -5, 0],
-                  transition: { duration: 0.5 }
+                  scale: 1.05,
+                  transition: { duration: 0.3 }
                 }}
-                whileTap={{ scale: 0.9 }}
+                whileTap={{ scale: 0.95 }}
               >
                 {category}
               </motion.button>

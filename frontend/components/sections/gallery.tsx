@@ -109,33 +109,31 @@ export default function Gallery() {
     <section
       id="gallery"
       ref={sectionRef}
-      className="relative py-20 md:py-32"
+      className="relative py-16 sm:py-20 md:py-24 lg:py-32 bg-black overflow-hidden"
     >
-      <div className="container-custom">
+      <div className="container-custom max-w-6xl relative z-10 px-4 sm:px-6">
         {/* Section heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="mb-12 sm:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="gradient-text">Photo</span> Gallery
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
+            Photo Gallery
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-6"></div>
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            Explore moments from our workshops, competitions, and team activities 
-            that showcase our passion for robotics.
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl">
+            Explore moments from our workshops, competitions, and team activities.
           </p>
         </motion.div>
         
         {/* Gallery grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {galleryImages.map((image, index) => (
             <motion.div
               key={image.id}
-              className="gallery-item relative overflow-hidden rounded-xl cursor-pointer group"
+              className="gallery-item relative overflow-hidden rounded-2xl cursor-pointer group border border-zinc-800/50 bg-zinc-900/30 hover:border-zinc-700/50 transition-all duration-300"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -144,12 +142,12 @@ export default function Gallery() {
             >
               {/* Placeholder for gallery image */}
               <div 
-                className="aspect-[4/3] bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center"
+                className="aspect-[4/3] bg-gradient-to-br from-cyan-500/10 to-violet-500/10 flex items-center justify-center"
                 style={{ 
                   aspectRatio: image.width / image.height 
                 }}
               >
-                <span className="text-lg font-bold text-white/30">Gallery Image {image.id}</span>
+                <span className="text-base sm:text-lg font-bold text-white/30">Gallery {image.id}</span>
               </div>
               {/* Uncomment when images are available */}
               {/* { <Image 
@@ -161,9 +159,11 @@ export default function Gallery() {
               /> } */}
               
               {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <span className="text-white text-sm font-medium">{image.alt}</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <span className="text-white text-xs sm:text-sm font-medium">{image.alt}</span>
               </div>
+              
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-violet-500/0 group-hover:from-cyan-500/5 group-hover:to-violet-500/5 transition-all duration-500 pointer-events-none" />
             </motion.div>
           ))}
         </div>
@@ -176,7 +176,7 @@ export default function Gallery() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="inline-flex items-center px-6 py-3 bg-transparent border border-primary rounded-full text-primary hover:bg-primary/10 hover:shadow-neon-cyan transition-all duration-300"
+            className="inline-flex items-center px-6 py-3 bg-white text-black rounded-lg font-medium shadow-[0_0_15px_rgba(0,245,255,0.15)] hover:shadow-[0_0_35px_rgba(0,245,255,0.5)] hover:bg-cyan-50 transition-all duration-300"
           >
             View Full Gallery
             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -205,15 +205,15 @@ export default function Gallery() {
             >
               {/* Close button */}
               <button
-                className="absolute -top-12 right-0 text-white hover:text-primary transition-colors"
+                className="absolute -top-12 right-0 text-white hover:text-cyan-400 transition-colors"
                 onClick={closeLightbox}
               >
                 <X className="w-6 h-6" />
               </button>
               
               {/* Image */}
-              <div className="bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl aspect-[16/9] flex items-center justify-center">
-                <span className="text-2xl font-bold text-white/50">
+              <div className="bg-gradient-to-br from-cyan-500/10 to-violet-500/10 rounded-2xl aspect-[16/9] flex items-center justify-center border border-zinc-800/50">
+                <span className="text-xl sm:text-2xl font-bold text-white/50">
                   Gallery Image {selectedImage}
                 </span>
               </div>
@@ -234,7 +234,7 @@ export default function Gallery() {
               {/* Navigation arrows */}
               <div className="absolute top-1/2 left-0 right-0 flex justify-between transform -translate-y-1/2 px-4">
                 <button
-                  className="w-10 h-10 rounded-full bg-dark-300/80 flex items-center justify-center text-white hover:bg-primary/30 transition-colors"
+                  className="w-10 h-10 rounded-full bg-zinc-800/80 flex items-center justify-center text-white hover:bg-cyan-400/30 hover:border-cyan-400/50 border border-zinc-700/50 transition-all duration-300"
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     setSelectedImage((prev) => 
@@ -247,7 +247,7 @@ export default function Gallery() {
                   </svg>
                 </button>
                 <button
-                  className="w-10 h-10 rounded-full bg-dark-300/80 flex items-center justify-center text-white hover:bg-primary/30 transition-colors"
+                  className="w-10 h-10 rounded-full bg-zinc-800/80 flex items-center justify-center text-white hover:bg-cyan-400/30 hover:border-cyan-400/50 border border-zinc-700/50 transition-all duration-300"
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
                     setSelectedImage((prev) => 

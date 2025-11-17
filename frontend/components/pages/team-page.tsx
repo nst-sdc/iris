@@ -329,7 +329,7 @@ export default function TeamPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <motion.button
               onClick={() => handleDepartmentChange('All')}
-              className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeDepartment === 'All' ? "bg-gradient-to-r from-primary to-secondary text-dark shadow-neon-glow" : "bg-dark-300 text-gray-300 hover:bg-dark-200"}`}
+              className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${activeDepartment === 'All' ? "bg-white text-black hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]" : "bg-zinc-800/50 text-gray-300 border border-zinc-700/50 hover:bg-zinc-700/50 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"}`}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -340,7 +340,7 @@ export default function TeamPage() {
               <motion.button
                 key={department}
                 onClick={() => handleDepartmentChange(department)}
-                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${activeDepartment === department ? "bg-gradient-to-r from-primary to-secondary text-dark shadow-neon-glow" : "bg-dark-300 text-gray-300 hover:bg-dark-200"}`}
+                className={`px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 ${activeDepartment === department ? "bg-white text-black hover:shadow-[0_0_20px_rgba(0,245,255,0.3)]" : "bg-zinc-800/50 text-gray-300 border border-zinc-700/50 hover:bg-zinc-700/50 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"}`}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -435,13 +435,11 @@ export default function TeamPage() {
             </p>
             <motion.a
               href="#"
-              className="relative inline-block px-8 py-4 bg-dark-300 rounded-full text-primary font-medium overflow-hidden group"
+              className="inline-block px-8 py-4 bg-white text-black rounded-lg font-medium hover:shadow-[0_0_25px_rgba(0,245,255,0.3)] transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="relative z-10">Apply for Membership</span>
-              <span className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-              <span className="absolute -inset-1 rounded-full border border-primary animate-pulse-slow opacity-70"></span>
+              Apply for Membership
             </motion.a>
           </motion.div>
         </div>

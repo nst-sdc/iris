@@ -96,40 +96,38 @@ export default function Events() {
     <section
       id="events"
       ref={sectionRef}
-      className="relative py-20 md:py-32"
+      className="relative py-16 sm:py-20 md:py-24 lg:py-32 bg-black overflow-hidden"
     >
-      <div className="container-custom">
+      <div className="container-custom max-w-6xl relative z-10 px-4 sm:px-6">
         {/* Section heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="mb-12 sm:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="gradient-text">Events</span> & Workshops
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-3 text-white">
+            Events & Workshops
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-primary to-secondary mx-auto mb-6"></div>
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            Join our upcoming events to learn new skills, network with fellow robotics 
-            enthusiasts, and stay updated with the latest in robotics technology.
+          <p className="text-gray-400 text-base sm:text-lg max-w-2xl">
+            Join our upcoming events to learn new skills and network with fellow robotics enthusiasts.
           </p>
         </motion.div>
         
         {/* Timeline */}
         <div ref={timelineRef} className="relative max-w-3xl mx-auto">
           {/* Timeline line */}
-          <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-1 bg-dark-300 transform md:translate-x-[-50%]">
-            <div className="timeline-progress absolute top-0 left-0 w-full bg-gradient-to-b from-primary to-secondary h-0"></div>
+          <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-zinc-800/50 transform md:translate-x-[-50%]">
+            <div className="timeline-progress absolute top-0 left-0 w-full bg-gradient-to-b from-cyan-400 to-blue-500 h-0"></div>
           </div>
           
           {/* Events */}
-          <div className="space-y-16">
+          <div className="space-y-12 sm:space-y-16">
             {events.map((event, index) => (
               <div key={event.id} className="relative">
                 {/* Timeline dot */}
-                <div className="absolute left-[-8px] md:left-1/2 top-0 w-4 h-4 rounded-full bg-primary shadow-neon-cyan transform md:translate-x-[-50%] z-10"></div>
+                <div className="absolute left-[-6px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)] transform md:translate-x-[-50%] z-10"></div>
                 
                 {/* Event card */}
                 <motion.div
@@ -141,66 +139,51 @@ export default function Events() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                  <div className={`glass-card rounded-xl p-6 ${
-                    event.isUpcoming ? "border-l-4 border-primary" : "border-l-4 border-gray-600"
-                  }`}>
-                    <div className="flex flex-wrap justify-between items-start mb-4">
-                      <h3 className="text-xl font-bold text-glow-cyan mb-2">
+                  <div className={`relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 p-6 sm:p-8 ${
+                    event.isUpcoming ? "border-l-4 border-l-cyan-400 hover:bg-zinc-900/50" : "border-l-4 border-l-zinc-700"
+                  } transition-all duration-300`}>
+                    <div className="flex flex-wrap justify-between items-start mb-4 gap-2">
+                      <h3 className="text-lg sm:text-xl font-semibold text-white">
                         {event.title}
                       </h3>
                       {event.isUpcoming && (
-                        <span className="px-2 py-1 text-xs font-medium bg-primary/20 text-primary rounded-full">
+                        <span className="px-3 py-1 text-xs font-medium bg-cyan-400/10 text-cyan-400 rounded-full border border-cyan-400/20">
                           Upcoming
                         </span>
                       )}
                     </div>
                     
-                    <p className="text-gray-300 mb-4">
+                    <p className="text-gray-400 text-sm sm:text-base mb-4">
                       {event.description}
                     </p>
                     
-                    <div className="flex flex-col space-y-2 text-sm text-gray-400">
+                    <div className="flex flex-col space-y-2 text-xs sm:text-sm text-gray-400">
                       <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-2 text-primary" />
+                        <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
                         <span>{event.date}</span>
                       </div>
                       <div className="flex items-center">
-                        <Clock className="w-4 h-4 mr-2 text-primary" />
+                        <Clock className="w-4 h-4 mr-2 text-cyan-400" />
                         <span>{event.time}</span>
                       </div>
                       <div className="flex items-center">
-                        <MapPin className="w-4 h-4 mr-2 text-primary" />
+                        <MapPin className="w-4 h-4 mr-2 text-cyan-400" />
                         <span>{event.location}</span>
                       </div>
                     </div>
                     
                     {event.isUpcoming && (
-                      <button className="mt-4 px-4 py-2 text-sm bg-dark-300 hover:bg-dark-200 text-primary rounded-lg transition-colors duration-300">
+                      <button className="mt-6 w-full sm:w-auto px-4 py-2 text-sm bg-zinc-800/50 hover:bg-zinc-800 text-cyan-400 rounded-lg border border-zinc-700/50 hover:border-cyan-400/50 transition-all duration-300">
                         Register Now
                       </button>
                     )}
+                    
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-violet-500/0 group-hover:from-cyan-500/5 group-hover:to-violet-500/5 transition-all duration-500 pointer-events-none" />
                   </div>
                 </motion.div>
               </div>
             ))}
           </div>
-        </div>
-        
-        {/* View all events button */}
-        <div className="text-center mt-16">
-          <motion.a
-            href="#"
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="inline-flex items-center px-6 py-3 bg-transparent border border-primary rounded-full text-primary hover:bg-primary/10 hover:shadow-neon-cyan transition-all duration-300"
-          >
-            View All Events
-            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-          </motion.a>
         </div>
       </div>
     </section>

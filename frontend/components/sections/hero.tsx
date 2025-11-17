@@ -32,7 +32,7 @@ export default function Hero() {
     <section
       id="home"
       ref={heroRef}
-      className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-black"
+      className="relative min-h-screen flex items-center pt-20 sm:pt-24 pb-10 overflow-hidden bg-black"
     >
       {/* Animated background layers */}
       <CircuitLines />
@@ -61,7 +61,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col space-y-6"
+            className="flex flex-col space-y-4 sm:space-y-6 text-center lg:text-left"
           >
             <motion.h1 
               initial={{ opacity: 0 }}
@@ -70,7 +70,7 @@ export default function Hero() {
               className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
             > 
               <motion.span 
-                className="font-spacefont text-[5rem] md:text-[7rem] bg-iris-gradient text-transparent bg-clip-text drop-shadow-glow inline-block"
+                className="font-spacefont text-[3.5rem] sm:text-[5rem] md:text-[7rem] bg-iris-gradient text-transparent bg-clip-text drop-shadow-glow inline-block"
                 animate={{
                   textShadow: [
                     "0 0 20px rgba(0,245,255,0.5)",
@@ -87,40 +87,53 @@ export default function Hero() {
               </motion.span>
             </motion.h1>
             
-            <motion.p
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="text-lg text-gray-300 max-w-lg"
+              className="space-y-2 sm:space-y-4"
             >
-              Join IRIS Robotics Club to explore cutting-edge technology, 
-              collaborate on innovative projects, and develop skills that 
-              shape the future of robotics and automation.
-            </motion.p>
+              <motion.p 
+                className="font-spacefont text-xl sm:text-2xl md:text-3xl lg:text-4xl bg-iris-gradient text-transparent bg-clip-text drop-shadow-glow"
+                animate={{
+                  textShadow: [
+                    "0 0 15px rgba(0,245,255,0.4)",
+                    "0 0 30px rgba(0,245,255,0.6)",
+                    "0 0 15px rgba(0,245,255,0.4)",
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                }}
+              >
+                The Robotics Club
+              </motion.p>
+              <p className="text-sm sm:text-base md:text-lg text-gray-400 max-w-lg mx-auto lg:mx-0 leading-relaxed px-4 lg:px-0">
+                Newton School of Technology<br />
+                Ajeenkya DY Patil University
+              </p>
+            </motion.div>
             
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start px-4 lg:px-0"
             >
               <motion.a
                 href="/projects"
-                className="px-6 py-3 bg-gradient-to-r from-primary to-secondary rounded-full text-dark font-medium hover:shadow-neon-glow transition-all duration-300 relative overflow-hidden group"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="w-full sm:w-auto px-6 py-3 bg-white text-black rounded-lg font-medium transition-all duration-200 shadow-[0_0_15px_rgba(0,245,255,0.15)] hover:shadow-[0_0_30px_rgba(0,245,255,0.4)] hover:bg-cyan-50 text-center"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-secondary to-primary opacity-0 group-hover:opacity-100 transition-opacity"
-                  initial={false}
-                />
-                <span className="relative z-10">Explore Projects</span>
+                Explore Projects
               </motion.a>
               <motion.a
                 href="#about"
-                className="px-6 py-3 bg-transparent border-2 border-primary rounded-full text-primary hover:bg-primary/10 hover:shadow-neon-cyan transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="w-full sm:w-auto px-6 py-3 bg-zinc-800/50 text-white rounded-lg font-medium border border-zinc-700/50 transition-all duration-200 shadow-[0_0_10px_rgba(139,92,246,0.1)] hover:shadow-[0_0_25px_rgba(139,92,246,0.3)] hover:bg-zinc-800 hover:border-violet-500/50 text-center"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
                 Learn More
               </motion.a>
@@ -132,7 +145,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.5 }}
-            className="robot-container h-[200px] md:h-[400px] lg:h-[500px] relative"
+            className="robot-container h-[250px] sm:h-[300px] md:h-[400px] lg:h-[500px] relative order-first lg:order-last mt-10 lg:mt-0"
           >
             {/* Rotating rings around robot */}
             <motion.div
