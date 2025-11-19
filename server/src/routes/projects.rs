@@ -1,22 +1,41 @@
-use axum::{extract::State, Json};
+use axum::{extract::State, Json, Extension, http::StatusCode, response::IntoResponse, body::Bytes};
 use futures_util::stream::TryStreamExt;
 use mongodb::bson::{doc, oid::ObjectId};
 use serde::Deserialize;
 
 use crate::db::AppState;
 use crate::models::{Project, ProjectStatus};
+use crate::middleware::auth::AuthUser;
 
 #[derive(Deserialize)]
 pub struct CreateProjectRequest {
     pub name: String,
     pub description: String,
     pub created_by: String, // ObjectId as string
+    pub status: Option<String>,
+    pub github_link: Option<String>,
+    pub project_lead_id: Option<String>, // ObjectId as string
 }
 
 #[derive(Deserialize)]
 pub struct AssignMemberRequest {
     pub project_id: String,
     pub member_id: String,
+}
+
+#[derive(Deserialize)]
+pub struct SetProjectLeadRequest {
+    pub project_id: String,
+    pub member_id: String,
+}
+
+#[derive(Deserialize)]
+pub struct UpdateProjectRequest {
+    pub project_id: String,
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub status: Option<String>,
+    pub github_link: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -61,12 +80,23 @@ pub async fn create_project(
     State(state): State<AppState>,
     Json(payload): Json<CreateProjectRequest>,
 ) -> Json<String> {
+    let status = match payload.status.as_deref() {
+        Some("completed") => ProjectStatus::Completed,
+        Some("onhold") => ProjectStatus::OnHold,
+        _ => ProjectStatus::Active,
+    };
+
+    let project_lead_id = payload.project_lead_id
+        .and_then(|id| ObjectId::parse_str(&id).ok());
+
     let new_project = Project {
         id: None,
         name: payload.name,
         description: payload.description,
-        status: ProjectStatus::Active,
+        status,
         member_ids: Some(Vec::new()),
+        project_lead_id,
+        github_link: payload.github_link,
         created_by: ObjectId::parse_str(&payload.created_by).unwrap(),
         created_at: chrono::Utc::now().to_rfc3339(),
         updated_at: chrono::Utc::now().to_rfc3339(),
@@ -166,4 +196,174 @@ pub async fn delete_project(
         .unwrap();
 
     Json("Project deleted successfully".to_string())
+}
+
+// Set project lead (admin)
+pub async fn set_project_lead(
+    State(state): State<AppState>,
+    Json(payload): Json<SetProjectLeadRequest>,
+) -> Json<String> {
+    let project_id = ObjectId::parse_str(&payload.project_id).unwrap();
+    let member_id = ObjectId::parse_str(&payload.member_id).unwrap();
+
+    state.projects
+        .update_one(
+            doc! { "_id": project_id },
+            doc! { 
+                "$set": { 
+                    "project_lead_id": member_id,
+                    "updated_at": chrono::Utc::now().to_rfc3339()
+                }
+            },
+        )
+        .await
+        .unwrap();
+
+    Json("Project lead assigned successfully".to_string())
+}
+
+// Update project (admin)
+pub async fn update_project(
+    State(state): State<AppState>,
+    Json(payload): Json<UpdateProjectRequest>,
+) -> Json<String> {
+    let project_id = ObjectId::parse_str(&payload.project_id).unwrap();
+    let mut update_doc = doc! {};
+
+    if let Some(name) = payload.name {
+        update_doc.insert("name", name);
+    }
+    if let Some(description) = payload.description {
+        update_doc.insert("description", description);
+    }
+    if let Some(status) = payload.status {
+        let status_str = match status.as_str() {
+            "completed" => "Completed",
+            "onhold" => "OnHold",
+            _ => "Active",
+        };
+        update_doc.insert("status", status_str);
+    }
+    if let Some(github_link) = payload.github_link {
+        update_doc.insert("github_link", github_link);
+    }
+    update_doc.insert("updated_at", chrono::Utc::now().to_rfc3339());
+
+    state.projects
+        .update_one(
+            doc! { "_id": project_id },
+            doc! { "$set": update_doc },
+        )
+        .await
+        .unwrap();
+
+    Json("Project updated successfully".to_string())
+}
+
+// Remove member from project (project lead or admin)
+pub async fn remove_member_by_lead(
+    State(state): State<AppState>,
+    Extension(auth_user): Extension<AuthUser>,
+    body: Bytes,
+) -> impl IntoResponse {
+    println!("=== Remove Member Request ===");
+    println!("Auth User: {:?}", auth_user);
+    println!("Raw body: {:?}", String::from_utf8_lossy(&body));
+    
+    let payload: AssignMemberRequest = match serde_json::from_slice(&body) {
+        Ok(p) => p,
+        Err(e) => {
+            println!("Failed to parse JSON: {:?}", e);
+            return (StatusCode::BAD_REQUEST, Json(format!("Invalid JSON: {}", e))).into_response();
+        }
+    };
+    
+    println!("Parsed payload: project_id={}, member_id={}", payload.project_id, payload.member_id);
+    
+    let project_id = match ObjectId::parse_str(&payload.project_id) {
+        Ok(id) => id,
+        Err(e) => {
+            println!("Error parsing project_id: {:?}", e);
+            return (StatusCode::BAD_REQUEST, Json("Invalid project ID".to_string())).into_response();
+        }
+    };
+    
+    let member_id = match ObjectId::parse_str(&payload.member_id) {
+        Ok(id) => id,
+        Err(e) => {
+            println!("Error parsing member_id: {:?}", e);
+            return (StatusCode::BAD_REQUEST, Json("Invalid member ID".to_string())).into_response();
+        }
+    };
+    
+    let auth_user_id = match ObjectId::parse_str(&auth_user.id) {
+        Ok(id) => id,
+        Err(e) => {
+            println!("Error parsing auth_user_id: {:?}", e);
+            return (StatusCode::BAD_REQUEST, Json("Invalid user ID".to_string())).into_response();
+        }
+    };
+
+    println!("Parsed IDs - Project: {:?}, Member: {:?}, AuthUser: {:?}", project_id, member_id, auth_user_id);
+
+    // Get the project to check if user is the project lead
+    let project = match state.projects.find_one(doc! { "_id": project_id }).await {
+        Ok(Some(p)) => {
+            println!("Found project: {:?}", p.name);
+            p
+        },
+        Ok(None) => {
+            println!("Project not found");
+            return (StatusCode::NOT_FOUND, Json("Project not found".to_string())).into_response();
+        },
+        Err(e) => {
+            println!("Database error: {:?}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json("Database error".to_string())).into_response();
+        }
+    };
+
+    // Check if user is admin or project lead
+    let is_admin = auth_user.role == crate::models::user::Role::Admin;
+    let is_project_lead = project.project_lead_id == Some(auth_user_id);
+
+    println!("Is admin: {}, Is project lead: {}", is_admin, is_project_lead);
+    println!("Project lead ID: {:?}", project.project_lead_id);
+
+    if !is_admin && !is_project_lead {
+        println!("Permission denied");
+        return (StatusCode::FORBIDDEN, Json("Only project lead or admin can remove members".to_string())).into_response();
+    }
+
+    // Remove member from project
+    if let Err(e) = state.projects
+        .update_one(
+            doc! { "_id": project_id },
+            doc! { 
+                "$pull": { "member_ids": member_id },
+                "$set": { "updated_at": chrono::Utc::now().to_rfc3339() }
+            },
+        )
+        .await
+    {
+        println!("Failed to update project: {:?}", e);
+        return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to update project".to_string())).into_response();
+    }
+
+    // Remove project from user
+    if let Err(e) = state.users
+        .update_one(
+            doc! { "_id": member_id },
+            doc! { 
+                "$pull": { "project_ids": project_id },
+                "$set": { "updated_at": chrono::Utc::now().to_rfc3339() }
+            },
+        )
+        .await
+    {
+        println!("Failed to update user: {:?}", e);
+        return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to update user".to_string())).into_response();
+    }
+
+    println!("Member removed successfully");
+    (StatusCode::OK, Json("Member removed from project successfully".to_string())).into_response()
 }

@@ -1,4 +1,4 @@
-use axum::{extract::State, Json};
+use axum::{extract::{State, Path}, Json, http::StatusCode, response::IntoResponse};
 use futures_util::stream::TryStreamExt;
 use mongodb::bson::doc;
 use serde::Deserialize;
@@ -52,6 +52,58 @@ pub async fn get_members(State(state): State<AppState>) -> Json<Vec<User>> {
     Json(members)
 }
 
+// Get user by ID (protected - any authenticated user can access)
+pub async fn get_user_by_id(
+    State(state): State<AppState>,
+    Path(user_id): Path<String>,
+) -> impl IntoResponse {
+    let oid = match mongodb::bson::oid::ObjectId::parse_str(&user_id) {
+        Ok(id) => id,
+        Err(_) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(serde_json::json!({
+                    "error": "Invalid user ID format"
+                }))
+            ).into_response();
+        }
+    };
+
+    match state.users.find_one(doc! { "_id": oid }).await {
+        Ok(Some(user)) => {
+            // Return only safe user information (no password hash)
+            (
+                StatusCode::OK,
+                Json(serde_json::json!({
+                    "id": user.id,
+                    "username": user.username,
+                    "full_name": user.full_name,
+                    "email": user.email,
+                    "role": user.role,
+                    "coins": user.coins
+                }))
+            ).into_response()
+        }
+        Ok(None) => {
+            (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({
+                    "error": "User not found"
+                }))
+            ).into_response()
+        }
+        Err(e) => {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "error": "Database error",
+                    "message": e.to_string()
+                }))
+            ).into_response()
+        }
+    }
+}
+
 // Add user/member (admin)
 pub async fn add_user(
     State(state): State<AppState>,
@@ -83,15 +135,25 @@ pub async fn add_user(
 pub async fn update_user_role(
     State(state): State<AppState>,
     Json(payload): Json<UpdateRoleRequest>,
-) -> Json<String> {
-    let user_id = mongodb::bson::oid::ObjectId::parse_str(&payload.user_id).unwrap();
+) -> impl IntoResponse {
+    let user_id = match mongodb::bson::oid::ObjectId::parse_str(&payload.user_id) {
+        Ok(id) => id,
+        Err(_) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(serde_json::json!({
+                    "error": "Invalid user ID format"
+                }))
+            ).into_response();
+        }
+    };
     
     let role = match payload.role.as_str() {
         "Admin" => "Admin",
         _ => "Member",
     };
 
-    state.users
+    match state.users
         .update_one(
             doc! { "_id": user_id },
             doc! { 
@@ -102,9 +164,26 @@ pub async fn update_user_role(
             },
         )
         .await
-        .unwrap();
-
-    Json("User role updated successfully".to_string())
+    {
+        Ok(_) => {
+            (
+                StatusCode::OK,
+                Json(serde_json::json!({
+                    "success": true,
+                    "message": "User role updated successfully"
+                }))
+            ).into_response()
+        }
+        Err(e) => {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "error": "Database error",
+                    "message": e.to_string()
+                }))
+            ).into_response()
+        }
+    }
 }
 
 // Delete/Remove user (admin)

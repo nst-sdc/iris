@@ -221,3 +221,74 @@ pub async fn github_callback(
         }))
     ).into_response()
 }
+
+// Test login endpoint (for development only)
+#[derive(Debug, Deserialize)]
+pub struct TestLoginRequest {
+    pub user_id: String,
+}
+
+pub async fn test_login(
+    State(state): State<AppState>,
+    Json(payload): Json<TestLoginRequest>,
+) -> Response {
+    use mongodb::bson::oid::ObjectId;
+    use mongodb::bson::doc;
+
+    let user_id = match ObjectId::parse_str(&payload.user_id) {
+        Ok(id) => id,
+        Err(_) => {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(serde_json::json!({
+                    "error": "Invalid user ID format"
+                }))
+            ).into_response();
+        }
+    };
+
+    let user = match state.users.find_one(doc! { "_id": user_id }).await {
+        Ok(Some(user)) => user,
+        _ => {
+            return (
+                StatusCode::NOT_FOUND,
+                Json(serde_json::json!({
+                    "error": "User not found"
+                }))
+            ).into_response();
+        }
+    };
+
+    let jwt_token = match create_jwt(
+        &user.id.unwrap().to_hex(),
+        &user.username,
+        &user.email,
+        &user.role
+    ) {
+        Ok(token) => token,
+        Err(_) => {
+            return (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "error": "Failed to create token"
+                }))
+            ).into_response();
+        }
+    };
+
+    (
+        StatusCode::OK,
+        Json(serde_json::json!({
+            "success": true,
+            "token": jwt_token,
+            "user": {
+                "id": user.id.map(|id| id.to_hex()),
+                "username": user.username,
+                "full_name": user.full_name,
+                "email": user.email,
+                "role": format!("{:?}", user.role),
+                "coins": user.coins,
+            }
+        }))
+    ).into_response()
+}

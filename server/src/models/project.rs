@@ -17,6 +17,10 @@ pub struct Project {
     pub status: ProjectStatus,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub member_ids: Option<Vec<ObjectId>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub project_lead_id: Option<ObjectId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub github_link: Option<String>,
     pub created_by: ObjectId,
     pub created_at: String,
     pub updated_at: String,

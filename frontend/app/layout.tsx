@@ -4,6 +4,8 @@ import { ThemeProvider } from "../components/theme-provider";
 import SmoothScroll from "../components/smooth-scroll";
 import Navigation from "../components/navigation";
 import { RouteChangeProvider } from "../components/route-change-provider";
+import { AuthProvider } from "../contexts/AuthContext";
+import { ToastProvider } from "../contexts/ToastContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,12 +37,16 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <RouteChangeProvider>
-            <SmoothScroll>
-              <Navigation />
-              {children}
-            </SmoothScroll>
-          </RouteChangeProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <RouteChangeProvider>
+                <SmoothScroll>
+                  <Navigation />
+                  {children}
+                </SmoothScroll>
+              </RouteChangeProvider>
+            </ToastProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

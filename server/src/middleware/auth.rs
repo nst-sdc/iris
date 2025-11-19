@@ -72,6 +72,10 @@ pub async fn auth_middleware(
     mut request: Request,
     next: Next,
 ) -> Response {
+    let uri = request.uri().clone();
+    let method = request.method().clone();
+    println!("=== AUTH MIDDLEWARE: {} {} ===", method, uri);
+    
     let auth_header = request
         .headers()
         .get(header::AUTHORIZATION)

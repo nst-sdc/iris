@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 
@@ -12,11 +13,18 @@ const navItems = [
   { label: "Events", href: "/events" },
   { label: "Gallery", href: "/gallery" },
   { label: "Blog", href: "/blog" },
+  { label: "Dashboard", href: "/login" },
   { label: "Contact", href: "/contact" },
-  
 ];
 
 export default function Navigation() {
+  const pathname = usePathname();
+  
+  // Hide navigation on login, auth, and dashboard pages
+  if (pathname?.startsWith('/login') || pathname?.startsWith('/auth') || pathname?.startsWith('/dashboard')) {
+    return null;
+  }
+  
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
