@@ -7,5 +7,5 @@ pub mod coin;
 pub use user::{User, Role};
 pub use project::{Project, ProjectStatus};
 pub use project_join_request::{ProjectJoinRequest, JoinRequestStatus, CreateJoinRequest, UpdateJoinRequestStatus};
-pub use message::Message;
+pub use message::{Message, MessageType};
 pub use coin::{CoinTransaction, WeeklyLeaderboard, LeaderboardEntry};

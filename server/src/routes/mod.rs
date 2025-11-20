@@ -45,6 +45,7 @@ pub fn create_routes(state: AppState) -> Router {
         .route("/projects/remove-member", post(remove_member_by_lead))
         .route("/coins/transactions", post(get_coin_transactions))
         .route("/messages/user", post(get_user_messages))
+        .route("/messages/send", post(send_message))
         .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
 
     // Admin-only routes
@@ -59,7 +60,6 @@ pub fn create_routes(state: AppState) -> Router {
         .route("/coins/manage", post(manage_coins))
         .route("/coins/leaderboard/save", post(save_weekly_leaderboard))
         .route("/messages", get(get_all_messages))
-        .route("/messages/send", post(send_message))
         .layer(middleware::from_fn(admin_middleware))
         .layer(middleware::from_fn_with_state(state.clone(), auth_middleware));
 
