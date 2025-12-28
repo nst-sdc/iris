@@ -18,6 +18,9 @@ pids
 
 # Build output
 dist/
+
+# Large video files
+frontend/public/videos/paper-boat.mp4
 build/
 .next/
 out/

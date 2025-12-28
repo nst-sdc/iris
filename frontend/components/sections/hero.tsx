@@ -44,7 +44,7 @@ export default function Hero() {
             playsInline
             className="w-full h-full object-contain opacity-90"
           >
-            <source src="/videos/paper-boat.mp4" type="video/mp4" />
+            <source src="https://res.cloudinary.com/daefnk9rw/video/upload/v1766940391/qr5q4owqt69hbmh6boek.mp4" type="video/mp4" />
           </video>
           {/* Gradient overlays for smooth blending - more subtle */}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent pointer-events-none opacity-50"></div>
