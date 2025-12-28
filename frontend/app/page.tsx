@@ -39,12 +39,29 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    // Set a minimum loading time to allow the loading animation to complete
+    const minLoadingTime = 2500; // Match the loading screen's internal timing
+    const startTime = Date.now();
     
-    return () => clearTimeout(timer);
+    const handleLoad = () => {
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+      
+      setTimeout(() => {
+        setLoading(false);
+      }, remainingTime);
+    };
+
+    // Check if already loaded
+    if (document.readyState === 'complete') {
+      handleLoad();
+    } else {
+      window.addEventListener('load', handleLoad);
+    }
+    
+    return () => {
+      window.removeEventListener('load', handleLoad);
+    };
   }, []);
   
   return (

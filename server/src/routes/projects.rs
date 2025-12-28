@@ -4,7 +4,7 @@ use mongodb::bson::{doc, oid::ObjectId};
 use serde::Deserialize;
 
 use crate::db::AppState;
-use crate::models::{Project, ProjectStatus};
+use crate::models::{Project, ProjectStatus, ProjectFile};
 use crate::middleware::auth::AuthUser;
 
 #[derive(Deserialize)]
@@ -97,6 +97,7 @@ pub async fn create_project(
         member_ids: Some(Vec::new()),
         project_lead_id,
         github_link: payload.github_link,
+        files: Some(Vec::new()),
         created_by: ObjectId::parse_str(&payload.created_by).unwrap(),
         created_at: chrono::Utc::now().to_rfc3339(),
         updated_at: chrono::Utc::now().to_rfc3339(),
@@ -366,4 +367,131 @@ pub async fn remove_member_by_lead(
 
     println!("Member removed successfully");
     (StatusCode::OK, Json("Member removed from project successfully".to_string())).into_response()
+}
+
+#[derive(Deserialize)]
+pub struct AddFileRequest {
+    pub project_id: String,
+    pub name: String,
+    pub url: String,
+    pub file_type: String,
+    pub size: i64,
+}
+
+#[derive(Deserialize)]
+pub struct DeleteFileRequest {
+    pub project_id: String,
+    pub file_id: String,
+}
+
+// Add file to project (project lead only)
+pub async fn add_file_to_project(
+    State(state): State<AppState>,
+    Extension(auth_user): Extension<AuthUser>,
+    Json(payload): Json<AddFileRequest>,
+) -> impl IntoResponse {
+    let project_id = match ObjectId::parse_str(&payload.project_id) {
+        Ok(id) => id,
+        Err(_) => return (StatusCode::BAD_REQUEST, Json("Invalid project ID".to_string())).into_response(),
+    };
+
+    let auth_user_id = match ObjectId::parse_str(&auth_user.id) {
+        Ok(id) => id,
+        Err(_) => return (StatusCode::BAD_REQUEST, Json("Invalid user ID".to_string())).into_response(),
+    };
+
+    // Get the project to check if user is the project lead
+    let project = match state.projects.find_one(doc! { "_id": project_id }).await {
+        Ok(Some(p)) => p,
+        Ok(None) => return (StatusCode::NOT_FOUND, Json("Project not found".to_string())).into_response(),
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json("Database error".to_string())).into_response(),
+    };
+
+    // Check if user is admin or project lead
+    let is_admin = auth_user.role == crate::models::user::Role::Admin;
+    let is_project_lead = project.project_lead_id == Some(auth_user_id);
+
+    if !is_admin && !is_project_lead {
+        return (StatusCode::FORBIDDEN, Json("Only project lead or admin can upload files".to_string())).into_response();
+    }
+
+    // Create new file entry
+    let new_file = ProjectFile {
+        id: ObjectId::new(),
+        name: payload.name,
+        url: payload.url,
+        file_type: payload.file_type,
+        size: payload.size,
+        uploaded_by: auth_user_id,
+        uploaded_at: chrono::Utc::now().to_rfc3339(),
+    };
+
+    // Add file to project
+    if let Err(_) = state.projects
+        .update_one(
+            doc! { "_id": project_id },
+            doc! {
+                "$push": { "files": mongodb::bson::to_document(&new_file).unwrap() },
+                "$set": { "updated_at": chrono::Utc::now().to_rfc3339() }
+            },
+        )
+        .await
+    {
+        return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to add file".to_string())).into_response();
+    }
+
+    (StatusCode::OK, Json("File added successfully".to_string())).into_response()
+}
+
+// Delete file from project (project lead only)
+pub async fn delete_file_from_project(
+    State(state): State<AppState>,
+    Extension(auth_user): Extension<AuthUser>,
+    Json(payload): Json<DeleteFileRequest>,
+) -> impl IntoResponse {
+    let project_id = match ObjectId::parse_str(&payload.project_id) {
+        Ok(id) => id,
+        Err(_) => return (StatusCode::BAD_REQUEST, Json("Invalid project ID".to_string())).into_response(),
+    };
+
+    let file_id = match ObjectId::parse_str(&payload.file_id) {
+        Ok(id) => id,
+        Err(_) => return (StatusCode::BAD_REQUEST, Json("Invalid file ID".to_string())).into_response(),
+    };
+
+    let auth_user_id = match ObjectId::parse_str(&auth_user.id) {
+        Ok(id) => id,
+        Err(_) => return (StatusCode::BAD_REQUEST, Json("Invalid user ID".to_string())).into_response(),
+    };
+
+    // Get the project to check if user is the project lead
+    let project = match state.projects.find_one(doc! { "_id": project_id }).await {
+        Ok(Some(p)) => p,
+        Ok(None) => return (StatusCode::NOT_FOUND, Json("Project not found".to_string())).into_response(),
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json("Database error".to_string())).into_response(),
+    };
+
+    // Check if user is admin or project lead
+    let is_admin = auth_user.role == crate::models::user::Role::Admin;
+    let is_project_lead = project.project_lead_id == Some(auth_user_id);
+
+    if !is_admin && !is_project_lead {
+        return (StatusCode::FORBIDDEN, Json("Only project lead or admin can delete files".to_string())).into_response();
+    }
+
+    // Remove file from project
+    if let Err(_) = state.projects
+        .update_one(
+            doc! { "_id": project_id },
+            doc! {
+                "$pull": { "files": { "_id": file_id } },
+                "$set": { "updated_at": chrono::Utc::now().to_rfc3339() }
+            },
+        )
+        .await
+    {
+        return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to delete file".to_string())).into_response();
+    }
+
+    (StatusCode::OK, Json("File deleted successfully".to_string())).into_response()
 }

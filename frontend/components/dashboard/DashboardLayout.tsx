@@ -5,9 +5,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  LayoutDashboard, 
+  Layout, 
   Users, 
-  FolderKanban, 
+  Folder, 
   Coins, 
   MessageSquare, 
   Trophy,
@@ -21,9 +21,9 @@ import {
 import { useState } from 'react';
 
 const adminRoutes = [
-  { name: 'Dashboard', href: '/dashboard/admin', icon: LayoutDashboard },
+  { name: 'Dashboard', href: '/dashboard/admin', icon: Layout },
   { name: 'Users', href: '/dashboard/admin/users', icon: Users },
-  { name: 'Projects', href: '/dashboard/admin/projects', icon: FolderKanban },
+  { name: 'Projects', href: '/dashboard/admin/projects', icon: Folder },
   { name: 'Coins', href: '/dashboard/admin/coins', icon: Coins },
   { name: 'Messages', href: '/dashboard/admin/messages', icon: MessageSquare },
 ];

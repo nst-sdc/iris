@@ -7,6 +7,7 @@ import { projectsAPI } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useRouter } from "next/navigation";
+import { ProjectFiles } from "@/components/project-files";
 
 interface Project {
   _id: string | { $oid: string };
@@ -17,6 +18,7 @@ interface Project {
   member_ids?: string[];
   project_lead_id?: string | { $oid: string };
   created_at: string;
+  files?: any[];
 }
 
 const fadeInUp = {
@@ -47,6 +49,14 @@ const cardVariants = (i: number) => ({
     }
   })
 });
+
+// Helper to safely extract ID from ObjectId or string
+const extractUserId = (id: any): string => {
+  if (!id) return '';
+  if (typeof id === 'string') return id;
+  if (typeof id === 'object' && '$oid' in id) return id.$oid;
+  return String(id);
+};
 
 export default function ProjectsPage() {
   const { user, token } = useAuth();
@@ -110,17 +120,17 @@ export default function ProjectsPage() {
     if (!user) return false;
     const userId = user._id || user.id;
     if (!userId) return false;
-    const userIdStr = typeof userId === 'string' ? userId : userId.$oid;
+    const userIdStr = extractUserId(userId);
     
     // Check if user is a member
     const isMember = project.member_ids?.some(memberId => {
-      const memberIdStr = typeof memberId === 'string' ? memberId : (memberId as any)?.$oid || memberId;
+      const memberIdStr = extractUserId(memberId);
       return memberIdStr === userIdStr;
     }) || false;
     
     // Check if user is the project lead
     const projectLeadId = project.project_lead_id;
-    const leadIdStr = projectLeadId ? (typeof projectLeadId === 'string' ? projectLeadId : projectLeadId.$oid) : null;
+    const leadIdStr = extractUserId(projectLeadId);
     const isLead = leadIdStr === userIdStr;
     
     console.log('Checking membership for project:', project.name);
@@ -400,6 +410,24 @@ export default function ProjectsPage() {
                     </div>
                   </div>
 
+                  {/* Project Files Section */}
+                  {(selectedProject.files && selectedProject.files.length > 0) || isUserMember(selectedProject) || user?.role === 'Admin' ? (
+                    <div className="pt-6 border-t border-zinc-800">
+                      <h3 className="text-lg font-semibold mb-4 text-white">Project Files</h3>
+                      <ProjectFiles
+                        projectId={extractId(selectedProject._id)}
+                        files={selectedProject.files || []}
+                        isProjectLead={
+                          user ? (
+                            user.role === 'Admin' || 
+                            extractId(selectedProject.project_lead_id) === extractUserId(user._id || user.id)
+                          ) : false
+                        }
+                        onFilesUpdate={loadData}
+                      />
+                    </div>
+                  ) : null}
+
                   {/* Request to Join Section */}
                   {!user ? (
                     <div className="pt-4 border-t border-zinc-800">
@@ -427,7 +455,7 @@ export default function ProjectsPage() {
                     <div className="pt-4 border-t border-zinc-800">
                       <p className="text-center text-gray-400 mb-3">Interested in joining this project?</p>
                       <button
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent) => {
                           e.stopPropagation();
                           handleJoinRequest();
                         }}
@@ -460,7 +488,7 @@ export default function ProjectsPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               <button
                 onClick={() => setShowJoinModal(false)}

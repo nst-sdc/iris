@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/contexts/ToastContext';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
+import { ProjectFiles } from '@/components/project-files';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Users, Github, Clock, Mail, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -421,6 +422,16 @@ export default function MemberProjectsPage() {
                       )}
                     </div>
                   )}
+
+                  {/* Project Files */}
+                  <div className="mb-6 pb-6 border-b border-white/10">
+                    <ProjectFiles
+                      projectId={projectId}
+                      files={project.files || []}
+                      isProjectLead={true}
+                      onFilesUpdate={() => loadProjects()}
+                    />
+                  </div>
 
                   {/* Project Members */}
                   <div>

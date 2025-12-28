@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: iris-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: free
+    branch: main
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 5657
+      - key: RUST_LOG
+        value: info
+    healthCheckPath: /health

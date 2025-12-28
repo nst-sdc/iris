@@ -8,7 +8,8 @@ use crate::routes::users::{get_users, get_members, add_user, update_user_role, d
 use crate::routes::projects::{
     get_all_projects, get_user_projects, create_project, 
     assign_member_to_project, remove_member_from_project, delete_project,
-    set_project_lead, update_project, remove_member_by_lead
+    set_project_lead, update_project, remove_member_by_lead,
+    add_file_to_project, delete_file_from_project
 };
 use crate::routes::project_join_requests::{
     create_join_request, get_project_join_requests, update_join_request_status
@@ -25,10 +26,18 @@ async fn root_handler() -> axum::Json<serde_json::Value> {
     }))
 }
 
+async fn health_handler() -> axum::Json<serde_json::Value> {
+    axum::Json(serde_json::json!({
+        "status": "healthy",
+        "timestamp": chrono::Utc::now().to_rfc3339()
+    }))
+}
+
 pub fn create_routes(state: AppState) -> Router {
     // Public routes
     let public_routes = Router::new()
         .route("/", get(root_handler))
+        .route("/health", get(health_handler))
         .route("/auth/github", get(github_login))
         .route("/auth/github/callback", get(github_callback))
         .route("/auth/test-login", post(test_login))
@@ -43,6 +52,7 @@ pub fn create_routes(state: AppState) -> Router {
         .route("/projects/{id}/join-requests", get(get_project_join_requests))
         .route("/projects/join-request/{id}", axum::routing::patch(update_join_request_status))
         .route("/projects/remove-member", post(remove_member_by_lead))
+        .route("/projects/files", post(add_file_to_project).delete(delete_file_from_project))
         .route("/coins/transactions", post(get_coin_transactions))
         .route("/messages/user", post(get_user_messages))
         .route("/messages/send", post(send_message))

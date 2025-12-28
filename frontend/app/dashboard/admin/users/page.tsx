@@ -5,7 +5,7 @@ import { useToast } from '@/contexts/ToastContext';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import ConfirmDialog from '@/components/ui/confirm-dialog';
 import { motion } from 'framer-motion';
-import { Users, Mail, Award, Trash2 } from 'lucide-react';
+import { Users, Mail, Award, Trash } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { usersAPI } from '@/lib/api';
 
@@ -183,7 +183,7 @@ export default function UsersPage() {
                         {user.role === 'Admin' ? 'Demote to Member' : 'Promote to Admin'}
                       </button>
                       <button className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm font-medium transition-colors">
-                        <Trash2 className="w-4 h-4" />
+                        <Trash className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
