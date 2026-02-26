@@ -53,6 +53,5 @@ Thumbs.db
 
 # Rust files
 target/
-Cargo.lock
 
 Deployment.md
