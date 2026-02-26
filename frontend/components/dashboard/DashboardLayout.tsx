@@ -16,7 +16,8 @@ import {
   Menu,
   X,
   ChevronRight,
-  ArrowLeft
+  ArrowLeft,
+  FolderKanban
 } from 'lucide-react';
 import { useState } from 'react';
 
