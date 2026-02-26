@@ -27,7 +27,7 @@
     "gsap": "^3.12.3",
     "lucide-react": "^0.554.0",
     "next": "^14.0.4",
-    "next-mdx-remote": "^4.4.1",
+    "next-mdx-remote": "^6.0.0",
     "next-themes": "^0.2.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
