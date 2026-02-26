@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useSearchParams } from "next/navigation";
 import GlitchText from "../components/ui/glitch-text";
@@ -453,7 +453,15 @@ export interface LoadingScreenProps {
   showProgressBar?: boolean;
 }
 
-export default function LoadingScreen({
+export default function LoadingScreen(props: LoadingScreenProps) {
+  return (
+    <Suspense fallback={null}>
+      <LoadingScreenInner {...props} />
+    </Suspense>
+  );
+}
+
+function LoadingScreenInner({
   minimumDuration = 1200,
   loadingText = "Loading",
   showCpuAnimation = true,

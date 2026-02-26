@@ -53,7 +53,7 @@ export default function CoinsPage() {
     try {
       // Extract user ID from MongoDB format
       const userId = typeof selectedUser === 'string' ? selectedUser : selectedUser;
-      const adminId = typeof user?.id === 'string' ? user.id : user?._id?.$oid || user?._id;
+      const adminId = typeof user?.id === 'string' ? user.id : (user as any)?._id?.$oid || (user as any)?._id;
 
       await coinsAPI.manage(token!, {
         user_id: userId,

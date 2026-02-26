@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import LoadingScreen from "../app/loadingScreen";
 
@@ -19,7 +19,7 @@ interface RouteChangeProviderProps {
   children: React.ReactNode;
 }
 
-export function RouteChangeProvider({ children }: RouteChangeProviderProps) {
+function RouteChangeProviderInner({ children }: RouteChangeProviderProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isChangingRoute, setIsChangingRoute] = useState(false);
@@ -42,5 +42,13 @@ export function RouteChangeProvider({ children }: RouteChangeProviderProps) {
       {/* <LoadingScreen /> */}
       {children}
     </RouteChangeContext.Provider>
+  );
+}
+
+export function RouteChangeProvider({ children }: RouteChangeProviderProps) {
+  return (
+    <Suspense fallback={null}>
+      <RouteChangeProviderInner>{children}</RouteChangeProviderInner>
+    </Suspense>
   );
 }

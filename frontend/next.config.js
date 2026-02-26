@@ -7,7 +7,6 @@ const nextConfig = {
   },
   // Enable App Router features
   experimental: {
-    serverActions: true,
     serverComponentsExternalPackages: [],
   },
   // Optimize for performance

@@ -335,12 +335,12 @@ body {
     flex-direction: column !important;
   }
   
-  .timeline-event .w-5/12 {
+  .timeline-event .w-5\/12 {
     width: 100%;
     margin-bottom: 1rem;
   }
   
-  .timeline-event .w-2/12 {
+  .timeline-event .w-2\/12 {
     width: 100%;
     margin: 1rem 0;
   }
