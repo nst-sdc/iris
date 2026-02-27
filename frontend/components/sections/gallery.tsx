@@ -2,58 +2,45 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import Image from "next/image";
+import { X, Image as ImageIcon } from "lucide-react";
+import { galleryAPI } from "@/lib/api";
 
-// Sample gallery images data
-const galleryImages = [
-  {
-    id: 1,
-    src: "/images/gallery/gallery1.png", // Placeholder - will need to be created
-    alt: "Team working on a drone project",
-    width: 600,
-    height: 400,
-  },
-  {
-    id: 2,
-    src: "/images/gallery/gallery2.jpg", // Placeholder - will need to be created
-    alt: "Robotics competition",
-    width: 400,
-    height: 600,
-  },
-  {
-    id: 3,
-    src: "/images/gallery/gallery3.jpg", // Placeholder - will need to be created
-    alt: "Workshop session",
-    width: 600,
-    height: 400,
-  },
-  {
-    id: 4,
-    src: "/images/gallery/gallery4.jpg", // Placeholder - will need to be created
-    alt: "Robot prototype testing",
-    width: 600,
-    height: 400,
-  },
-  {
-    id: 5,
-    src: "/images/gallery/gallery5.jpg", // Placeholder - will need to be created
-    alt: "Team photo at competition",
-    width: 400,
-    height: 600,
-  },
-  {
-    id: 6,
-    src: "/images/gallery/gallery6.jpg", // Placeholder - will need to be created
-    alt: "Close-up of robot components",
-    width: 600,
-    height: 400,
-  },
-];
+interface GalleryImage {
+  id: string;
+  title: string;
+  image_url: string;
+  thumbnail_url?: string;
+  category: string;
+  description: string;
+}
 
 export default function Gallery() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadGallery = async () => {
+      try {
+        const data = await galleryAPI.getAll();
+        const mapped: GalleryImage[] = data.slice(0, 6).map((item: any) => ({
+          id: typeof item._id === 'string' ? item._id : item._id?.$oid || '',
+          title: item.title,
+          image_url: item.image_url,
+          thumbnail_url: item.thumbnail_url,
+          category: item.category,
+          description: item.description,
+        }));
+        setImages(mapped);
+      } catch (error) {
+        console.error('Failed to load gallery:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadGallery();
+  }, []);
   
   useEffect(() => {
     const initScrollTrigger = async () => {
@@ -82,28 +69,28 @@ export default function Gallery() {
   }, []);
 
   // Handle lightbox open/close
-  const openLightbox = (id: number) => setSelectedImage(id);
-  const closeLightbox = () => setSelectedImage(null);
+  const openLightbox = (index: number) => setSelectedIndex(index);
+  const closeLightbox = () => setSelectedIndex(null);
   
   // Handle keyboard events for lightbox
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && selectedImage !== null) {
+      if (e.key === "Escape" && selectedIndex !== null) {
         closeLightbox();
-      } else if (e.key === "ArrowRight" && selectedImage !== null) {
-        setSelectedImage((prev) => 
-          prev === galleryImages.length ? 1 : (prev as number) + 1
+      } else if (e.key === "ArrowRight" && selectedIndex !== null) {
+        setSelectedIndex((prev) => 
+          prev !== null && prev < images.length - 1 ? prev + 1 : 0
         );
-      } else if (e.key === "ArrowLeft" && selectedImage !== null) {
-        setSelectedImage((prev) => 
-          prev === 1 ? galleryImages.length : (prev as number) - 1
+      } else if (e.key === "ArrowLeft" && selectedIndex !== null) {
+        setSelectedIndex((prev) => 
+          prev !== null && prev > 0 ? prev - 1 : images.length - 1
         );
       }
     };
     
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [selectedImage]);
+  }, [selectedIndex, images.length]);
 
   return (
     <section
@@ -129,8 +116,19 @@ export default function Gallery() {
         </motion.div>
         
         {/* Gallery grid */}
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-cyan-400"></div>
+            <p className="text-gray-400 mt-4">Loading gallery...</p>
+          </div>
+        ) : images.length === 0 ? (
+          <div className="text-center py-12">
+            <ImageIcon className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-400">No photos yet. Check back soon!</p>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {galleryImages.map((image, index) => (
+          {images.map((image, index) => (
             <motion.div
               key={image.id}
               className="gallery-item relative overflow-hidden rounded-2xl cursor-pointer group border border-zinc-800/50 bg-zinc-900/30 hover:border-zinc-700/50 transition-all duration-300"
@@ -138,40 +136,35 @@ export default function Gallery() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              onClick={() => openLightbox(image.id)}
+              onClick={() => openLightbox(index)}
             >
-              {/* Placeholder for gallery image */}
-              <div 
-                className="aspect-[4/3] bg-gradient-to-br from-cyan-500/10 to-violet-500/10 flex items-center justify-center"
-                style={{ 
-                  aspectRatio: image.width / image.height 
-                }}
-              >
-                <span className="text-base sm:text-lg font-bold text-white/30">Gallery {image.id}</span>
+              <div className="aspect-[4/3] bg-gradient-to-br from-cyan-500/10 to-violet-500/10 overflow-hidden">
+                <img
+                  src={image.thumbnail_url || image.image_url}
+                  alt={image.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  onError={e => { e.currentTarget.style.display = 'none'; }}
+                />
               </div>
-              {/* Uncomment when images are available */}
-              {/* { <Image 
-                src={image.src} 
-                alt={image.alt}
-                width={image.width}
-                height={image.height}
-                className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
-              /> } */}
               
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                <span className="text-white text-xs sm:text-sm font-medium">{image.alt}</span>
+                <div>
+                  <span className="text-white text-xs sm:text-sm font-medium">{image.title}</span>
+                  <span className="block text-cyan-400 text-xs mt-0.5">{image.category}</span>
+                </div>
               </div>
               
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-violet-500/0 group-hover:from-cyan-500/5 group-hover:to-violet-500/5 transition-all duration-500 pointer-events-none" />
             </motion.div>
           ))}
         </div>
+        )}
         
         {/* View all gallery button */}
         <div className="text-center mt-12">
           <motion.a
-            href="#"
+            href="/gallery"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -188,7 +181,7 @@ export default function Gallery() {
       
       {/* Lightbox */}
       <AnimatePresence>
-        {selectedImage !== null && (
+        {selectedIndex !== null && images[selectedIndex] && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -212,23 +205,18 @@ export default function Gallery() {
               </button>
               
               {/* Image */}
-              <div className="bg-gradient-to-br from-cyan-500/10 to-violet-500/10 rounded-2xl aspect-[16/9] flex items-center justify-center border border-zinc-800/50">
-                <span className="text-xl sm:text-2xl font-bold text-white/50">
-                  Gallery Image {selectedImage}
-                </span>
+              <div className="rounded-2xl overflow-hidden border border-zinc-800/50">
+                <img
+                  src={images[selectedIndex].image_url}
+                  alt={images[selectedIndex].title}
+                  className="w-full h-auto max-h-[80vh] object-contain bg-black"
+                />
               </div>
-              {/* Uncomment when images are available */}
-              {/* <Image 
-                src={galleryImages.find(img => img.id === selectedImage)?.src || ""}
-                alt={galleryImages.find(img => img.id === selectedImage)?.alt || ""}
-                width={1200}
-                height={800}
-                className="w-full h-auto rounded-xl"
-              /> */}
               
               {/* Caption */}
               <div className="mt-4 text-center text-white">
-                <p>{galleryImages.find(img => img.id === selectedImage)?.alt}</p>
+                <p className="font-semibold">{images[selectedIndex].title}</p>
+                <p className="text-sm text-cyan-400 mt-1">{images[selectedIndex].category}</p>
               </div>
               
               {/* Navigation arrows */}
@@ -237,8 +225,8 @@ export default function Gallery() {
                   className="w-10 h-10 rounded-full bg-zinc-800/80 flex items-center justify-center text-white hover:bg-cyan-400/30 hover:border-cyan-400/50 border border-zinc-700/50 transition-all duration-300"
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
-                    setSelectedImage((prev) => 
-                      prev === 1 ? galleryImages.length : (prev as number) - 1
+                    setSelectedIndex((prev) => 
+                      prev !== null && prev > 0 ? prev - 1 : images.length - 1
                     );
                   }}
                 >
@@ -250,8 +238,8 @@ export default function Gallery() {
                   className="w-10 h-10 rounded-full bg-zinc-800/80 flex items-center justify-center text-white hover:bg-cyan-400/30 hover:border-cyan-400/50 border border-zinc-700/50 transition-all duration-300"
                   onClick={(e: React.MouseEvent) => {
                     e.stopPropagation();
-                    setSelectedImage((prev) => 
-                      prev === galleryImages.length ? 1 : (prev as number) + 1
+                    setSelectedIndex((prev) => 
+                      prev !== null && prev < images.length - 1 ? prev + 1 : 0
                     );
                   }}
                 >

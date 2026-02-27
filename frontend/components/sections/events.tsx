@@ -1,52 +1,52 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, MapPin } from "lucide-react";
+import { eventsAPI } from "@/lib/api";
 
-// Sample events data
-const events = [
-  {
-    id: 1,
-    title: "Robotics Workshop: Introduction to ROS",
-    date: "January 15, 2026",
-    time: "10:00 AM - 2:00 PM",
-    location: "Engineering Building, Room 305",
-    description: "Learn the basics of Robot Operating System (ROS) and how to use it for robotics development.",
-    isUpcoming: true,
-  },
-  {
-    id: 2,
-    title: "Annual Robotics Competition",
-    date: "February 20, 2026",
-    time: "9:00 AM - 6:00 PM",
-    location: "University Main Auditorium",
-    description: "Showcase your robotics projects and compete for prizes in various categories.",
-    isUpcoming: true,
-  },
-  {
-    id: 3,
-    title: "Industry Talk: Future of Automation",
-    date: "March 10, 2026",
-    time: "4:00 PM - 6:00 PM",
-    location: "Virtual Event (Zoom)",
-    description: "Join industry experts as they discuss the future trends in robotics and automation.",
-    isUpcoming: true,
-  },
-  {
-    id: 4,
-    title: "Hands-on Workshop: Building a Line Following Robot",
-    date: "April 5, 2026",
-    time: "11:00 AM - 3:00 PM",
-    location: "Robotics Lab, Tech Building",
-    description: "Practical session on building and programming a line following robot from scratch.",
-    isUpcoming: false,
-  },
-];
+interface HomeEvent {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  isUpcoming: boolean;
+}
 
 export default function Events() {
   const sectionRef = useRef<HTMLElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
+  const [homeEvents, setHomeEvents] = useState<HomeEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const data = await eventsAPI.getAll();
+        // Map API events to the display format, show latest 4
+        const mapped: HomeEvent[] = data
+          .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 4)
+          .map((event: any) => ({
+            id: typeof event._id === 'string' ? event._id : event._id?.$oid || event.id || '',
+            title: event.title,
+            date: new Date(event.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            time: event.time,
+            location: event.location,
+            description: event.description,
+            isUpcoming: event.status === 'Upcoming' || event.status === 'Ongoing',
+          }));
+        setHomeEvents(mapped);
+      } catch (error) {
+        console.error('Failed to load events:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadEvents();
+  }, []);
   
   useEffect(() => {
     const initScrollTrigger = async () => {
@@ -116,6 +116,17 @@ export default function Events() {
         </motion.div>
         
         {/* Timeline */}
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-cyan-400"></div>
+            <p className="text-gray-400 mt-4">Loading events...</p>
+          </div>
+        ) : homeEvents.length === 0 ? (
+          <div className="text-center py-12">
+            <Calendar className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <p className="text-gray-400">No events yet. Check back soon!</p>
+          </div>
+        ) : (
         <div ref={timelineRef} className="relative max-w-3xl mx-auto">
           {/* Timeline line */}
           <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-zinc-800/50 transform md:translate-x-[-50%]">
@@ -124,7 +135,7 @@ export default function Events() {
           
           {/* Events */}
           <div className="space-y-12 sm:space-y-16">
-            {events.map((event, index) => (
+            {homeEvents.map((event, index) => (
               <div key={event.id} className="relative">
                 {/* Timeline dot */}
                 <div className="absolute left-[-6px] md:left-1/2 top-0 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)] transform md:translate-x-[-50%] z-10"></div>
@@ -185,6 +196,7 @@ export default function Events() {
             ))}
           </div>
         </div>
+        )}
       </div>
     </section>
   );

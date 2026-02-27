@@ -4,11 +4,31 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X } from "lucide-react";
-import { galleryData, videoData, GalleryItem, VideoItem } from "../../data/gallery-data";
+import { galleryAPI } from "@/lib/api";
 import ParticlesBackground from "../ui/particles-background";
 
+// Types (matching API response)
+export interface GalleryItem {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  thumbnail?: string;
+  description: string;
+  date: string;
+  featured?: boolean;
+}
+
+export interface VideoItem {
+  id: string;
+  title: string;
+  thumbnail: string;
+  videoUrl: string;
+  description: string;
+}
+
 // Define gallery filter categories
-type GalleryCategory = 'All' | 'Events' | 'Projects' | 'Members' | 'Behind The Scenes';
+type GalleryCategory = 'All' | string;
 
 // Lightbox state interface
 interface LightboxState {
@@ -90,9 +110,13 @@ const textVariants = {
 };
 
 export default function GalleryPage() {
+  // All gallery items loaded from API
+  const [allItems, setAllItems] = useState<GalleryItem[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  
   // State for filtering and display
   const [activeCategory, setActiveCategory] = useState<GalleryCategory>('All');
-  const [filteredItems, setFilteredItems] = useState<GalleryItem[]>(galleryData);
+  const [filteredItems, setFilteredItems] = useState<GalleryItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [lightbox, setLightbox] = useState<LightboxState>({
     isOpen: false,
@@ -100,23 +124,42 @@ export default function GalleryPage() {
     currentIndex: -1
   });
   
+  // Load gallery from API
+  useEffect(() => {
+    const loadGallery = async () => {
+      try {
+        const data = await galleryAPI.getAll();
+        const mapped: GalleryItem[] = data.map((item: any) => ({
+          id: typeof item._id === 'string' ? item._id : item._id?.$oid || '',
+          title: item.title,
+          category: item.category,
+          image: item.image_url,
+          thumbnail: item.thumbnail_url,
+          description: item.description,
+          date: item.created_at || '',
+          featured: item.featured,
+        }));
+        setAllItems(mapped);
+        // Extract unique categories
+        const cats = Array.from(new Set(mapped.map(i => i.category))).filter(Boolean);
+        setCategories(cats);
+      } catch (error) {
+        console.error('Failed to load gallery:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadGallery();
+  }, []);
+  
   // Filter gallery items based on category
   useEffect(() => {
     if (activeCategory === 'All') {
-      setFilteredItems(galleryData);
+      setFilteredItems(allItems);
     } else {
-      setFilteredItems(galleryData.filter(item => item.category === activeCategory));
+      setFilteredItems(allItems.filter(item => item.category === activeCategory));
     }
-  }, [activeCategory]);
-  
-  // Simulate loading state
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    
-    return () => clearTimeout(timer);
-  }, []);
+  }, [activeCategory, allItems]);
   
   // Handle category filter change
   const handleCategoryChange = (category: GalleryCategory) => {
@@ -365,7 +408,7 @@ export default function GalleryPage() {
             initial="hidden"
             animate="visible"
           >
-            {['All', 'Events', 'Projects', 'Members', 'Behind The Scenes'].map((category) => (
+            {['All', ...categories].map((category) => (
               <motion.button
                 key={category}
                 onClick={() => handleCategoryChange(category as GalleryCategory)}
@@ -473,37 +516,20 @@ export default function GalleryPage() {
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.4 }}
                 >
-                  {/* Placeholder for image */}
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center"
-                    animate={{
-                      opacity: [0.7, 1, 0.7]
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <motion.span 
-                      className="text-xl font-bold text-white/50"
-                      animate={{ opacity: [0.5, 0.8, 0.5] }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    >
-                      {item.title}
-                    </motion.span>
-                  </motion.div>
-                  {/* Uncomment when images are available */}
-                  {/* <Image 
-                    src={item.image} 
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={item.thumbnail || item.image} 
                     alt={item.title}
-                    fill
-                    className="object-cover"
-                  /> */}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.querySelector('.img-fallback')?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="img-fallback hidden absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                    <span className="text-xl font-bold text-white/50">{item.title}</span>
+                  </div>
                   
                   {/* Overlay with info */}
                   <div className="absolute inset-0 bg-dark/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
@@ -570,7 +596,7 @@ export default function GalleryPage() {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
           >
-            {videoData.map((video, index) => (
+            {([] as VideoItem[]).map((video, index) => (
               <motion.div
                 key={video.id}
                 className="flex-shrink-0 w-full md:w-[500px] snap-center glass-card rounded-xl overflow-hidden"
@@ -725,18 +751,20 @@ export default function GalleryPage() {
                 ></motion.div>
                 
                 <div className="relative rounded-xl overflow-hidden bg-dark">
-                  {/* Placeholder for image */}
-                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                    <span className="text-3xl font-bold text-white/50">{lightbox.currentItem.title}</span>
-                  </div>
-                  {/* Uncomment when images are available */}
-                  {/* <Image 
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
                     src={lightbox.currentItem.image} 
                     alt={lightbox.currentItem.title}
-                    width={1200}
-                    height={800}
-                    className="w-full h-auto"
-                  /> */}
+                    className="w-full h-auto max-h-[80vh] object-contain"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                      target.parentElement!.querySelector('.img-fallback')?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="img-fallback hidden aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                    <span className="text-3xl font-bold text-white/50">{lightbox.currentItem.title}</span>
+                  </div>
                 </div>
               </div>
               

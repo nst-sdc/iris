@@ -89,17 +89,30 @@ export default function UsersPage() {
       : 'bg-blue-500/20 text-blue-400 border-blue-500/30';
   };
 
+  const handleDeleteUser = (userId: string, userName: string) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: 'Delete User',
+      message: `Are you sure you want to delete "${userName}"? This action cannot be undone.`,
+      onConfirm: async () => {
+        try {
+          await usersAPI.delete(token!, { user_id: userId });
+          toast.success('User deleted successfully!');
+          loadUsers();
+        } catch (err: any) {
+          console.error('Failed to delete user:', err);
+          toast.error(`Failed to delete user: ${err?.message || 'Unknown error'}`);
+        }
+      },
+    });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Users Management</h1>
-            <p className="text-gray-400">Manage all club members</p>
-          </div>
-          <button className="px-6 py-3 bg-gradient-to-r from-primary to-secondary rounded-lg font-semibold hover:opacity-90 transition-opacity">
-            Add New User
-          </button>
+        <div>
+          <h1 className="text-4xl font-bold mb-2">Users Management</h1>
+          <p className="text-gray-400">Manage all club members</p>
         </div>
 
         {loading ? (
@@ -182,7 +195,10 @@ export default function UsersPage() {
                       >
                         {user.role === 'Admin' ? 'Demote to Member' : 'Promote to Admin'}
                       </button>
-                      <button className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm font-medium transition-colors">
+                      <button 
+                        onClick={() => handleDeleteUser(userId, user.full_name || user.username)}
+                        className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-sm font-medium transition-colors"
+                      >
                         <Trash className="w-4 h-4" />
                       </button>
                     </div>
@@ -202,6 +218,8 @@ export default function UsersPage() {
           onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
           type="warning"
         />
+
+
       </div>
     </DashboardLayout>
   );

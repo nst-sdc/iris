@@ -3,32 +3,27 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Calendar, Clock, MapPin, Award, Users } from "lucide-react";
+import { Calendar, Clock, MapPin, Award, Users, X, Send } from "lucide-react";
 
 // Import GSAP and ScrollTrigger
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
+import { eventsAPI } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
-// Define event types
-type EventType = 'Workshop' | 'Competition' | 'Hackathon' | 'Meetup';
-type EventStatus = 'Upcoming' | 'Ongoing' | 'Completed';
-type ViewMode = 'timeline' | 'grid';
+// Types (matching the static data types but now populated from API)
+export type EventType = "Workshop" | "Competition" | "Hackathon" | "Meetup";
+export type EventStatus = "Upcoming" | "Ongoing" | "Completed";
 
-// Event detail modal state
-interface EventDetailState {
-  isOpen: boolean;
-  event: EventData | null;
-}
-
-interface EventSpeaker {
+export interface EventSpeaker {
   name: string;
   role: string;
   avatar: string;
 }
 
-interface EventData {
+export interface EventData {
   id: string;
   title: string;
   date: string;
@@ -45,132 +40,40 @@ interface EventData {
   speakers?: EventSpeaker[];
 }
 
-// Sample event data
-const eventsData: EventData[] = [
-  {
-    id: "event-1",
-    title: "IRIS Robotics Hackathon 2025",
-    date: "2025-03-14",
-    time: "09:00 AM - 09:00 AM (Next day)",
-    location: "Main Engineering Building, Room 305",
-    type: "Hackathon",
-    status: "Upcoming",
-    description: "A 24-hour robotics build-a-thon focusing on automation and AI challenges. Teams will compete to build innovative solutions for real-world problems.",
-    image: "/images/events/hackathon2025.jpg",
-    featured: true,
-    registerLink: "#"
-  },
-  {
-    id: "event-2",
-    title: "Autonomous Drone Workshop",
-    date: "2025-02-20",
-    time: "02:00 PM - 05:00 PM",
-    location: "Robotics Lab, Building 4",
-    type: "Workshop",
-    status: "Upcoming",
-    description: "Learn how to program autonomous flight patterns and object recognition for drone applications. Hands-on session with our fleet of training drones.",
-    image: "/images/events/drone-workshop.jpg",
-    featured: true,
-    registerLink: "#",
-    speakers: [
-      {
-        name: "Dr. Sarah Chen",
-        role: "Drone Systems Engineer",
-        avatar: "/images/team/sarah.jpg"
-      }
-    ]
-  },
-  {
-    id: "event-3",
-    title: "AI in Robotics Symposium",
-    date: "2025-01-15",
-    time: "10:00 AM - 04:00 PM",
-    location: "Virtual Event",
-    type: "Meetup",
-    status: "Upcoming",
-    description: "Join leading researchers and practitioners for a day of talks and discussions on the latest advancements in AI for robotics applications.",
-    image: "/images/events/ai-symposium.jpg",
-    featured: false,
-    registerLink: "#"
-  },
-  {
-    id: "event-4",
-    title: "Winter Robotics Showcase",
-    date: "2024-12-10",
-    time: "03:00 PM - 07:00 PM",
-    location: "University Exhibition Hall",
-    type: "Competition",
-    status: "Ongoing",
-    description: "Our annual showcase of student projects and research. Come see the cutting-edge innovations from our robotics teams and vote for your favorites.",
-    image: "/images/events/winter-showcase.jpg",
-    featured: true,
-    registerLink: "#"
-  },
-  {
-    id: "event-5",
-    title: "ROS2 Fundamentals Workshop",
-    date: "2024-11-05",
-    time: "01:00 PM - 04:00 PM",
-    location: "Computer Lab 2",
-    type: "Workshop",
-    status: "Completed",
-    description: "An introduction to Robot Operating System 2 (ROS2) for beginners. Learn the basics of nodes, topics, services, and how to build simple robotic applications.",
-    image: "/images/events/ros-workshop.jpg",
-    featured: false,
-    recapLink: "#"
-  },
-  {
-    id: "event-6",
-    title: "Robotic Arm Programming Challenge",
-    date: "2024-10-20",
-    time: "09:00 AM - 06:00 PM",
-    location: "Engineering Building, Room 201",
-    type: "Competition",
-    status: "Completed",
-    description: "A day-long competition where teams programmed robotic arms to complete a series of precision tasks. Prizes awarded for speed, accuracy, and innovation.",
-    image: "/images/events/arm-challenge.jpg",
-    featured: false,
-    recapLink: "#"
-  },
-  {
-    id: "event-7",
-    title: "Industry 4.0 and Robotics",
-    date: "2024-09-15",
-    time: "05:00 PM - 07:00 PM",
-    location: "Lecture Hall 3",
-    type: "Meetup",
-    status: "Completed",
-    description: "A panel discussion with industry experts on how robotics is transforming manufacturing and industrial processes in the age of Industry 4.0.",
-    image: "/images/events/industry40.jpg",
-    featured: false,
-    recapLink: "#"
-  },
-  {
-    id: "event-8",
-    title: "Summer Robotics Bootcamp",
-    date: "2024-07-10",
-    endDate: "2024-07-14",
-    time: "09:00 AM - 04:00 PM",
-    location: "Robotics Lab",
-    type: "Workshop",
-    status: "Completed",
-    description: "An intensive 5-day bootcamp covering mechanical design, electronics, programming, and AI for robotics. Participants built their own robot from scratch.",
-    image: "/images/events/bootcamp.jpg",
-    featured: true,
-    recapLink: "#"
-  }
-];
+type ViewMode = 'timeline' | 'grid';
+
+// Event detail modal state
+interface EventDetailState {
+  isOpen: boolean;
+  event: EventData | null;
+}
 
 export default function EventsPage() {
+  const { token, user } = useAuth();
+  
+  // All events loaded from API
+  const [allEvents, setAllEvents] = useState<EventData[]>([]);
+  
   // State for filtering and display
   const [activeFilter, setActiveFilter] = useState<'All' | EventStatus>('All');
   const [activeType, setActiveType] = useState<'All' | EventType>('All');
   const [viewMode, setViewMode] = useState<ViewMode>('timeline');
-  const [filteredEvents, setFilteredEvents] = useState<EventData[]>(eventsData);
+  const [filteredEvents, setFilteredEvents] = useState<EventData[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFiltering, setIsFiltering] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [eventDetail, setEventDetail] = useState<EventDetailState>({ isOpen: false, event: null });
+
+  // Proposal modal state
+  const [showProposalModal, setShowProposalModal] = useState(false);
+  const [proposalSubmitting, setProposalSubmitting] = useState(false);
+  const [proposalSuccess, setProposalSuccess] = useState(false);
+  const [proposalForm, setProposalForm] = useState({
+    title: '',
+    event_type: 'Workshop',
+    description: '',
+    preferred_date: '',
+  });
 
   // Group events by year and month for better timeline organization
   interface GroupedEvents {
@@ -213,27 +116,50 @@ export default function EventsPage() {
     // Register GSAP plugins
     gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
     
-    // Simulate loading state
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      // Initialize animations after loading
-      initAnimations();
-    }, 800);
-    
-    // Apply initial filters
-    filterEvents();
+    // Load events from API
+    const loadEvents = async () => {
+      try {
+        const data = await eventsAPI.getAll();
+        const mapped: EventData[] = data.map((event: any) => ({
+          id: typeof event._id === 'string' ? event._id : event._id?.$oid || '',
+          title: event.title,
+          date: event.date,
+          time: event.time,
+          endDate: event.end_date,
+          location: event.location,
+          type: (event.event_type || 'Other') as EventType,
+          status: (event.status || 'Upcoming') as EventStatus,
+          description: event.description,
+          image: event.image || '/images/events/default.jpg',
+          featured: event.featured || false,
+          registerLink: event.register_link,
+          recapLink: event.recap_link,
+          speakers: event.speakers?.map((s: any) => ({
+            name: s.name,
+            role: s.role,
+            avatar: s.avatar || '',
+          })),
+        }));
+        setAllEvents(mapped);
+      } catch (error) {
+        console.error('Failed to load events:', error);
+      } finally {
+        setIsLoading(false);
+        setTimeout(() => initAnimations(), 100);
+      }
+    };
+    loadEvents();
     
     return () => {
-      clearTimeout(timer);
       // Kill all ScrollTriggers on component unmount
       ScrollTrigger.getAll().forEach((trigger: ScrollTrigger) => trigger.kill());
     };
   }, []);
   
   useEffect(() => {
-    // Re-filter events when filters change
+    // Re-filter events when filters or data changes
     filterEvents();
-  }, [activeFilter, activeType]);
+  }, [activeFilter, activeType, allEvents]);
   
   // Clean up any timeouts when component unmounts
   useEffect(() => {
@@ -258,8 +184,8 @@ export default function EventsPage() {
   
   // Advanced filter events based on multiple criteria
   const filterEvents = () => {
-    // Start with all events
-    let filtered = [...eventsData];
+    // Start with all events from API
+    let filtered = [...allEvents];
     
     // Apply status filter
     if (activeFilter !== 'All') {
@@ -400,19 +326,7 @@ export default function EventsPage() {
         ease: "back.out(1.7)"
       });
       
-      // Animate timeline events with staggered entrance
-      gsap.from(".timeline-event", {
-        scrollTrigger: {
-          trigger: timelineRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          scrub: 0.5
-        },
-        opacity: 0,
-        x: (i: number) => i % 2 === 0 ? -50 : 50,
-        stagger: 0.15,
-        ease: "power2.out"
-      });
+      // Timeline events are animated via Framer Motion whileInView on each card
     }
     
     // Grid view animations
@@ -538,7 +452,7 @@ export default function EventsPage() {
   };
 
   // Get featured events
-  const featuredEvents = eventsData.filter(event => event.featured);
+  const featuredEvents = allEvents.filter(event => event.featured);
   
   // Function to determine if event is in the past, present, or future
   const getEventTimeframe = (event: EventData): 'past' | 'present' | 'future' => {
@@ -653,7 +567,7 @@ export default function EventsPage() {
                 transition={{ delay: 0.6, duration: 0.5 }}
               >
                 <span className="text-3xl font-bold text-glow-cyan mb-1">
-                  {eventsData.filter(e => e.status === 'Upcoming').length}
+                  {allEvents.filter(e => e.status === 'Upcoming').length}
                 </span>
                 <span className="text-sm text-gray-400">Upcoming Events</span>
               </motion.div>
@@ -665,7 +579,7 @@ export default function EventsPage() {
                 transition={{ delay: 0.7, duration: 0.5 }}
               >
                 <span className="text-3xl font-bold text-glow-green mb-1">
-                  {eventsData.filter(e => e.status === 'Ongoing').length}
+                  {allEvents.filter(e => e.status === 'Ongoing').length}
                 </span>
                 <span className="text-sm text-gray-400">Ongoing Events</span>
               </motion.div>
@@ -677,7 +591,7 @@ export default function EventsPage() {
                 transition={{ delay: 0.8, duration: 0.5 }}
               >
                 <span className="text-3xl font-bold gradient-text mb-1">
-                  {eventsData.filter(e => e.status === 'Completed').length}
+                  {allEvents.filter(e => e.status === 'Completed').length}
                 </span>
                 <span className="text-sm text-gray-400">Past Events</span>
               </motion.div>
@@ -783,7 +697,7 @@ export default function EventsPage() {
                         {status}
                         {status !== 'All' && (
                           <span className="ml-1 opacity-70">
-                            ({eventsData.filter(e => e.status === status).length})
+                            ({allEvents.filter(e => e.status === status).length})
                           </span>
                         )}
                       </motion.button>
@@ -812,7 +726,7 @@ export default function EventsPage() {
                         {type}
                         {type !== 'All' && (
                           <span className="ml-1 opacity-70">
-                            ({eventsData.filter(e => e.type === type).length})
+                            ({allEvents.filter(e => e.type === type).length})
                           </span>
                         )}
                       </motion.button>
@@ -869,7 +783,7 @@ export default function EventsPage() {
             {/* Filter stats */}
             <div className="flex justify-between items-center pt-2">
               <p className="text-sm text-gray-400">
-                Showing {filteredEvents.length} of {eventsData.length} events
+                Showing {filteredEvents.length} of {allEvents.length} events
                 {activeFilter !== 'All' && <span> • Filtered by {activeFilter}</span>}
                 {activeType !== 'All' && <span> • Type: {activeType}</span>}
                 {searchQuery && <span> • Search: "{searchQuery}"</span>}
@@ -925,17 +839,20 @@ export default function EventsPage() {
                   }}
                 >
                   <div className="relative h-60 overflow-hidden">
-                    {/* Placeholder for event image */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white/50">{event.title}</span>
-                    </div>
-                    {/* Uncomment when images are available */}
-                    {/* <Image 
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
                       src={event.image} 
                       alt={event.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    /> */}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.parentElement!.querySelector('.img-fallback')?.classList.remove('hidden');
+                      }}
+                    />
+                    <div className="img-fallback hidden absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-white/50">{event.title}</span>
+                    </div>
                     
                     {/* Status badge */}
                     <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(event.status)}`}>
@@ -1096,17 +1013,20 @@ export default function EventsPage() {
                             onClick={() => openEventDetail(event)}
                           >
                             <div className="relative h-40 overflow-hidden">
-                              {/* Placeholder for event image */}
-                              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                                <span className="text-xl font-bold text-white/50">{event.title}</span>
-                              </div>
-                              {/* Uncomment when images are available */}
-                              {/* <Image 
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img 
                                 src={event.image} 
                                 alt={event.title}
-                                fill
-                                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                              /> */}
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.style.display = 'none';
+                                  target.parentElement!.querySelector('.img-fallback')?.classList.remove('hidden');
+                                }}
+                              />
+                              <div className="img-fallback hidden absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                                <span className="text-xl font-bold text-white/50">{event.title}</span>
+                              </div>
                               
                               {/* Status badge */}
                               <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(event.status)}`}>
@@ -1199,17 +1119,20 @@ export default function EventsPage() {
                   onClick={() => openEventDetail(event)}
                 >
                   <div className="relative h-48 overflow-hidden">
-                    {/* Placeholder for event image */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-white/50">{event.title}</span>
-                    </div>
-                    {/* Uncomment when images are available */}
-                    {/* <Image 
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
                       src={event.image} 
                       alt={event.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    /> */}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.parentElement!.querySelector('.img-fallback')?.classList.remove('hidden');
+                      }}
+                    />
+                    <div className="img-fallback hidden absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-white/50">{event.title}</span>
+                    </div>
                     
                     {/* Status badge */}
                     <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(event.status)}`}>
@@ -1290,17 +1213,20 @@ export default function EventsPage() {
               
               {/* Event header */}
               <div className="relative h-64 md:h-80 overflow-hidden">
-                {/* Placeholder for event image */}
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center">
-                  <span className="text-3xl font-bold text-white/70">{eventDetail.event.title}</span>
-                </div>
-                {/* Uncomment when images are available */}
-                {/* <Image 
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
                   src={eventDetail.event.image} 
                   alt={eventDetail.event.title}
-                  fill
-                  className="object-cover"
-                /> */}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.querySelector('.img-fallback')?.classList.remove('hidden');
+                  }}
+                />
+                <div className="img-fallback hidden absolute inset-0 bg-gradient-to-br from-primary/30 to-secondary/30 flex items-center justify-center">
+                  <span className="text-3xl font-bold text-white/70">{eventDetail.event.title}</span>
+                </div>
                 
                 {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-dark to-transparent"></div>
@@ -1436,20 +1362,173 @@ export default function EventsPage() {
               <span className="gradient-text">an event?</span>
             </h2>
             <p className="text-gray-300 mb-8">
-              Have an idea for a workshop, competition, or meetup? We're always looking for new
+              Have an idea for a workshop, competition, or meetup? We&apos;re always looking for new
               events to add to our calendar. Submit your proposal and join our community of innovators.
             </p>
-            <motion.a
-              href="#"
+            <motion.button
+              onClick={() => {
+                if (!token) {
+                  window.location.href = '/login';
+                  return;
+                }
+                setProposalForm({ title: '', event_type: 'Workshop', description: '', preferred_date: '' });
+                setProposalSuccess(false);
+                setShowProposalModal(true);
+              }}
               className="inline-block px-8 py-4 bg-white text-black rounded-lg font-medium hover:shadow-[0_0_25px_rgba(0,245,255,0.3)] transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               Submit Event Idea
-            </motion.a>
+            </motion.button>
           </motion.div>
         </div>
       </section>
+
+      {/* Proposal Modal */}
+      <AnimatePresence>
+        {showProposalModal && (
+          <motion.div
+            key="proposal-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70"
+            onClick={() => setShowProposalModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="glass-card p-6 rounded-xl border border-primary/20 w-full max-w-lg"
+              onClick={e => e.stopPropagation()}
+            >
+              {proposalSuccess ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <Send className="w-8 h-8 text-green-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">Proposal Submitted!</h3>
+                  <p className="text-gray-400 mb-6">Your event idea has been sent to the admins. They&apos;ll review it and get back to you.</p>
+                  <button
+                    onClick={() => setShowProposalModal(false)}
+                    className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg font-medium hover:opacity-90 transition-all"
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-white">Submit Event Idea</h3>
+                    <button
+                      onClick={() => setShowProposalModal(false)}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!token) return;
+                    setProposalSubmitting(true);
+                    try {
+                      await eventsAPI.propose(token, {
+                        title: proposalForm.title,
+                        event_type: proposalForm.event_type,
+                        description: proposalForm.description,
+                        preferred_date: proposalForm.preferred_date || undefined,
+                      });
+                      setProposalSuccess(true);
+                    } catch (error: any) {
+                      alert(error.message || 'Failed to submit proposal. Please try again.');
+                    } finally {
+                      setProposalSubmitting(false);
+                    }
+                  }} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">Event Title *</label>
+                      <input
+                        type="text"
+                        required
+                        value={proposalForm.title}
+                        onChange={e => setProposalForm(prev => ({ ...prev, title: e.target.value }))}
+                        className="w-full px-4 py-2 bg-dark-300/50 border border-primary/10 rounded-lg focus:border-primary/30 focus:ring-1 focus:ring-primary/20 outline-none text-white"
+                        placeholder="e.g., IoT Workshop for Beginners"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">Event Type *</label>
+                      <select
+                        value={proposalForm.event_type}
+                        onChange={e => setProposalForm(prev => ({ ...prev, event_type: e.target.value }))}
+                        className="w-full px-4 py-2 bg-dark-300/50 border border-primary/10 rounded-lg focus:border-primary/30 outline-none text-white"
+                      >
+                        <option value="Workshop">Workshop</option>
+                        <option value="Competition">Competition</option>
+                        <option value="Hackathon">Hackathon</option>
+                        <option value="Meetup">Meetup</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">Preferred Date (optional)</label>
+                      <input
+                        type="date"
+                        value={proposalForm.preferred_date}
+                        onChange={e => setProposalForm(prev => ({ ...prev, preferred_date: e.target.value }))}
+                        className="w-full px-4 py-2 bg-dark-300/50 border border-primary/10 rounded-lg focus:border-primary/30 outline-none text-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">Describe Your Idea *</label>
+                      <textarea
+                        required
+                        value={proposalForm.description}
+                        onChange={e => setProposalForm(prev => ({ ...prev, description: e.target.value }))}
+                        rows={4}
+                        className="w-full px-4 py-2 bg-dark-300/50 border border-primary/10 rounded-lg focus:border-primary/30 outline-none text-white resize-none"
+                        placeholder="Tell us about the event — what it covers, who it's for, what attendees will learn or do..."
+                      />
+                    </div>
+
+                    <div className="flex justify-end gap-3 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowProposalModal(false)}
+                        className="px-4 py-2 bg-dark-300/50 border border-primary/10 rounded-lg hover:bg-dark-300 text-gray-300 transition-all"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={proposalSubmitting}
+                        className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg font-medium hover:opacity-90 transition-all disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {proposalSubmitting ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            Submitting...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4" />
+                            Submit Proposal
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

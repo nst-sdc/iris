@@ -3,9 +3,15 @@ pub mod project;
 pub mod project_join_request;
 pub mod message;
 pub mod coin;
+pub mod gallery;
+pub mod event;
+pub mod blog;
 
 pub use user::{User, Role};
 pub use project::{Project, ProjectStatus, ProjectFile};
 pub use project_join_request::{ProjectJoinRequest, JoinRequestStatus, CreateJoinRequest, UpdateJoinRequestStatus};
 pub use message::{Message, MessageType};
 pub use coin::{CoinTransaction, WeeklyLeaderboard, LeaderboardEntry};
+pub use gallery::GalleryItem;
+pub use event::{Event, EventType, EventStatus, EventSpeaker};
+pub use blog::Blog;

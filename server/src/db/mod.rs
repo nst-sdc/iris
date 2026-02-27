@@ -1,6 +1,6 @@
 use mongodb::{Client, Collection};
 
-use crate::models::{User, Project, ProjectJoinRequest, Message, CoinTransaction, WeeklyLeaderboard};
+use crate::models::{User, Project, ProjectJoinRequest, Message, CoinTransaction, WeeklyLeaderboard, GalleryItem, Event, Blog};
 
 #[derive(Clone, Debug)]
 pub struct AppState{
@@ -10,6 +10,9 @@ pub struct AppState{
     pub messages: Collection<Message>,
     pub coin_transactions: Collection<CoinTransaction>,
     pub leaderboards: Collection<WeeklyLeaderboard>,
+    pub gallery: Collection<GalleryItem>,
+    pub events: Collection<Event>,
+    pub blogs: Collection<Blog>,
 }
 
 pub async fn connect() -> AppState {
@@ -25,6 +28,9 @@ pub async fn connect() -> AppState {
     let messages = db.collection::<Message>("messages");
     let coin_transactions = db.collection::<CoinTransaction>("coin_transactions");
     let leaderboards = db.collection::<WeeklyLeaderboard>("leaderboards");
+    let gallery = db.collection::<GalleryItem>("gallery");
+    let events = db.collection::<Event>("events");
+    let blogs = db.collection::<Blog>("blogs");
     
     AppState {
         users,
@@ -33,5 +39,8 @@ pub async fn connect() -> AppState {
         messages,
         coin_transactions,
         leaderboards,
+        gallery,
+        events,
+        blogs,
     }
 }

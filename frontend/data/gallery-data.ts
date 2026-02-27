@@ -138,6 +138,24 @@ export const galleryData: GalleryItem[] = [
   }
 ];
 
+// Homepage gallery subset (6 items for the homepage section)
+export interface HomeGalleryImage {
+  id: number;
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+export const homeGalleryImages: HomeGalleryImage[] = [
+  { id: 1, src: "/images/gallery/gallery1.png", alt: "Team working on a drone project", width: 600, height: 400 },
+  { id: 2, src: "/images/gallery/gallery2.jpg", alt: "Robotics competition", width: 400, height: 600 },
+  { id: 3, src: "/images/gallery/gallery3.jpg", alt: "Workshop session", width: 600, height: 400 },
+  { id: 4, src: "/images/gallery/gallery4.jpg", alt: "Robot prototype testing", width: 600, height: 400 },
+  { id: 5, src: "/images/gallery/gallery5.jpg", alt: "Team photo at competition", width: 400, height: 600 },
+  { id: 6, src: "/images/gallery/gallery6.jpg", alt: "Close-up of robot components", width: 600, height: 400 },
+];
+
 // Featured videos for the video carousel section
 export interface VideoItem {
   id: string;

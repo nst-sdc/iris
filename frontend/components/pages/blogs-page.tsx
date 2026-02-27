@@ -2,34 +2,65 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Clock, User } from "lucide-react";
+import { Calendar, Clock, User, PenLine } from "lucide-react";
 import Link from "next/link";
+import { blogsAPI } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Blog {
   title: string;
   excerpt: string;
   description?: string;
   author: string;
+  author_name?: string;
   date: string;
+  created_at?: string;
   readTime?: string;
   image: string;
+  image_url?: string;
   category?: string;
   slug: string;
+  source?: "markdown" | "database";
 }
 
 export default function BlogPage() {
   const sectionRef = useRef<HTMLElement>(null);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
-  // Fetch blogs from API
+  // Fetch blogs from both markdown files and database
   useEffect(() => {
     async function fetchBlogs() {
       try {
-        const res = await fetch("/api/blogdata");
-        const data = await res.json();
-        setBlogs(data);
+        const [mdRes, dbBlogs] = await Promise.all([
+          fetch("/api/blogdata").then(r => r.json()).catch(() => []),
+          blogsAPI.getAll().catch(() => []),
+        ]);
+
+        // Normalize markdown blogs
+        const mdBlogs: Blog[] = (mdRes || []).map((b: any) => ({
+          ...b,
+          source: "markdown" as const,
+        }));
+
+        // Normalize database blogs
+        const normalizedDb: Blog[] = (dbBlogs || []).map((b: any) => ({
+          title: b.title,
+          description: b.description,
+          excerpt: b.description,
+          author: b.author_name || "Unknown",
+          date: b.created_at ? new Date(b.created_at).toLocaleDateString() : "",
+          image: b.image_url || "",
+          category: b.category,
+          slug: b.slug,
+          source: "database" as const,
+        }));
+
+        // Merge: database blogs first (newest), then markdown blogs
+        setBlogs([...normalizedDb, ...mdBlogs]);
       } catch (error) {
+        console.error("Failed to fetch blogs:", error);
       } finally {
         setLoading(false);
       }
@@ -93,6 +124,15 @@ export default function BlogPage() {
           <p className="text-gray-400 max-w-2xl mx-auto">
             Stay updated with the latest trends, tutorials, and insights in the world of robotics.
           </p>
+          {user && (
+            <Link
+              href="/blog/write"
+              className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg text-sm font-semibold text-white hover:opacity-90 transition-opacity"
+            >
+              <PenLine className="w-4 h-4" />
+              Write a Blog
+            </Link>
+          )}
         </motion.div>
 
         {/* Blog posts grid */}

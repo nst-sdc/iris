@@ -3,9 +3,9 @@
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { motion } from 'framer-motion';
-import { Users, Calendar, Award, Mail, Github, Zap } from 'lucide-react';
+import { Users, Calendar, Award, Mail, Github, Zap, Image, CalendarDays } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { usersAPI, projectsAPI } from '@/lib/api';
+import { usersAPI, projectsAPI, eventsAPI, galleryAPI } from '@/lib/api';
 
 export default function AdminDashboard() {
   const { token } = useAuth();
@@ -14,6 +14,8 @@ export default function AdminDashboard() {
     totalProjects: 0,
     activeProjects: 0,
     totalCoins: 0,
+    totalEvents: 0,
+    totalGallery: 0,
   });
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,9 +28,11 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     try {
-      const [users, projects] = await Promise.all([
+      const [users, projects, events, gallery] = await Promise.all([
         usersAPI.getAll(token!),
         projectsAPI.getAll(token!),
+        eventsAPI.getAll().catch(() => []),
+        galleryAPI.getAll().catch(() => []),
       ]);
 
       const activeProjects = projects.filter((p: any) => p.status?.toLowerCase() === 'active');
@@ -39,6 +43,8 @@ export default function AdminDashboard() {
         totalProjects: projects.length,
         activeProjects: activeProjects.length,
         totalCoins,
+        totalEvents: events.length,
+        totalGallery: gallery.length,
       });
 
       // Build recent activity from real data
@@ -111,6 +117,8 @@ export default function AdminDashboard() {
     { icon: Users, label: 'Total Users', value: stats.totalUsers, color: 'from-cyan-500 to-blue-500', iconColor: 'text-cyan-400' },
     { icon: Calendar, label: 'Total Projects', value: stats.totalProjects, color: 'from-purple-500 to-pink-500', iconColor: 'text-purple-400' },
     { icon: Github, label: 'Active Projects', value: stats.activeProjects, color: 'from-green-500 to-emerald-500', iconColor: 'text-green-400' },
+    { icon: CalendarDays, label: 'Total Events', value: stats.totalEvents, color: 'from-rose-500 to-pink-500', iconColor: 'text-rose-400' },
+    { icon: Image, label: 'Gallery Photos', value: stats.totalGallery, color: 'from-indigo-500 to-violet-500', iconColor: 'text-indigo-400' },
     { icon: Award, label: 'Total Coins', value: stats.totalCoins, color: 'from-amber-500 to-orange-500', iconColor: 'text-amber-400' },
   ];
 
@@ -124,7 +132,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {statCards.map((card, index) => {
             const Icon = card.icon;
             return (
@@ -159,7 +167,7 @@ export default function AdminDashboard() {
           className="glass-card p-6 rounded-xl border border-primary/10"
         >
           <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <a
               href="/dashboard/admin/users"
               className="group p-4 rounded-lg bg-dark-300/30 border border-primary/10 hover:border-primary/30 hover:bg-dark-300/50 transition-all"
@@ -178,6 +186,24 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-400">Create and assign projects</p>
             </a>
             
+            <a
+              href="/dashboard/admin/gallery"
+              className="group p-4 rounded-lg bg-dark-300/30 border border-primary/10 hover:border-primary/30 hover:bg-dark-300/50 transition-all"
+            >
+              <Image className="w-8 h-8 text-indigo-400 mb-2" />
+              <h3 className="font-semibold mb-1">Gallery</h3>
+              <p className="text-sm text-gray-400">Manage photos & categories</p>
+            </a>
+            
+            <a
+              href="/dashboard/admin/events"
+              className="group p-4 rounded-lg bg-dark-300/30 border border-primary/10 hover:border-primary/30 hover:bg-dark-300/50 transition-all"
+            >
+              <CalendarDays className="w-8 h-8 text-rose-400 mb-2" />
+              <h3 className="font-semibold mb-1">Events</h3>
+              <p className="text-sm text-gray-400">Create and manage events</p>
+            </a>
+
             <a
               href="/dashboard/admin/coins"
               className="group p-4 rounded-lg bg-dark-300/30 border border-primary/10 hover:border-primary/30 hover:bg-dark-300/50 transition-all"

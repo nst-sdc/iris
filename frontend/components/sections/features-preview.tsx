@@ -3,37 +3,14 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Cpu, Calendar, FileText, Image } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import CircuitLines from "../ui/circuit-lines";
 import FloatingIcons from "../ui/floating-icons";
 import DataStream from "../ui/data-stream";
 import HexagonGrid from "../ui/hexagon-grid";
+import { features } from "@/data/site-data";
 
-const features = [
-  {
-    icon: Cpu,
-    title: "Projects",
-    description: "Autonomous systems, robotics platforms, and hardware innovations.",
-    href: "/projects",
-  },
-  {
-    icon: Calendar,
-    title: "Events",
-    description: "Workshops, hackathons, and robotics competitions throughout the year.",
-    href: "/events",
-  },
-  {
-    icon: FileText,
-    title: "Blog",
-    description: "Technical articles, tutorials, and project documentation.",
-    href: "/blog",
-  },
-  {
-    icon: Image,
-    title: "Gallery",
-    description: "Photos from builds, events, and team activities.",
-    href: "/gallery",
-  }
-];
+const featureIconMap: Record<string, LucideIcon> = { Cpu, Calendar, FileText, Image };
 
 export default function FeaturesPreview() {
   return (
@@ -63,7 +40,9 @@ export default function FeaturesPreview() {
         
         {/* Features grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-          {features.map((feature, index) => (
+          {features.map((feature, index) => {
+            const FeatureIcon = featureIconMap[feature.iconName];
+            return (
             <motion.div
               key={feature.title}
               initial={{ opacity: 0, y: 20 }}
@@ -78,7 +57,7 @@ export default function FeaturesPreview() {
                 {/* Icon */}
                 <div className="flex items-start justify-between mb-6">
                   <div className="w-12 h-12 rounded-xl bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center group-hover:bg-zinc-800 group-hover:border-zinc-600/50 transition-all duration-300">
-                    <feature.icon className="w-6 h-6 text-zinc-400 group-hover:text-white transition-colors duration-300" strokeWidth={1.5} />
+                    {FeatureIcon && <FeatureIcon className="w-6 h-6 text-zinc-400 group-hover:text-white transition-colors duration-300" strokeWidth={1.5} />}
                   </div>
                   <svg 
                     className="w-5 h-5 text-zinc-600 group-hover:text-zinc-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" 
@@ -105,7 +84,8 @@ export default function FeaturesPreview() {
                 <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-transparent to-violet-500/0 group-hover:from-cyan-500/5 group-hover:to-violet-500/5 transition-all duration-500 pointer-events-none" />
               </Link>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

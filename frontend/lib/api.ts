@@ -89,3 +89,36 @@ export const messagesAPI = {
   getUser: (token: string, userId: string) => apiFetch('/messages/user', { method: 'POST', token, body: JSON.stringify({ user_id: userId }) }),
   getAll: (token: string) => apiFetch('/messages', { token }),
 };
+
+// Gallery API
+export const galleryAPI = {
+  getAll: () => apiFetch('/gallery', {}),
+  create: (token: string, data: any) => apiFetch('/gallery/admin', { method: 'POST', token, body: JSON.stringify(data) }),
+  update: (token: string, data: any) => apiFetch('/gallery/admin', { method: 'PATCH', token, body: JSON.stringify(data) }),
+  delete: (token: string, data: { id: string }) => apiFetch('/gallery/admin', { method: 'DELETE', token, body: JSON.stringify(data) }),
+};
+
+// Events API
+export const eventsAPI = {
+  getAll: () => apiFetch('/events', {}),
+  create: (token: string, data: any) => apiFetch('/events/admin', { method: 'POST', token, body: JSON.stringify(data) }),
+  update: (token: string, data: any) => apiFetch('/events/admin', { method: 'PATCH', token, body: JSON.stringify(data) }),
+  delete: (token: string, data: { id: string }) => apiFetch('/events/admin', { method: 'DELETE', token, body: JSON.stringify(data) }),
+  propose: (token: string, data: { title: string; event_type: string; description: string; preferred_date?: string }) =>
+    apiFetch('/events/propose', { method: 'POST', token, body: JSON.stringify(data) }),
+};
+
+// Stats API (public)
+export const statsAPI = {
+  get: () => apiFetch('/stats', {}),
+};
+
+// Blogs API
+export const blogsAPI = {
+  getAll: () => apiFetch('/blogs', {}),
+  getBySlug: (slug: string) => apiFetch(`/blogs/${slug}`, {}),
+  create: (token: string, data: { title: string; description: string; content: string; image_url?: string; category?: string }) =>
+    apiFetch('/blogs/create', { method: 'POST', token, body: JSON.stringify(data) }),
+  delete: (token: string, data: { blog_id: string }) =>
+    apiFetch('/blogs/delete', { method: 'POST', token, body: JSON.stringify(data) }),
+};

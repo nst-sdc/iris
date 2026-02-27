@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Github, Linkedin, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { clubInfo, socialLinks, quickLinks } from "@/data/site-data";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -23,13 +24,12 @@ export default function Footer() {
               <span className="text-2xl font-bold text-cyan-400">IRIS</span>
             </div>
             <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-              The Robotics Club of Newton School of Technology, ADYPU. 
-              Building the future through innovation and collaboration.
+              {clubInfo.description}
             </p>
             <div className="flex space-x-3">
               <a 
                 target="_blank"
-                href="https://github.com/nst-sdc/iris" 
+                href={socialLinks.github} 
                 className="w-10 h-10 rounded-full bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-gray-400 hover:text-cyan-400 hover:border-cyan-400/50 hover:bg-zinc-800 transition-all duration-300"
                 aria-label="GitHub"
               >
@@ -37,7 +37,7 @@ export default function Footer() {
               </a>
               <a 
                 target="_blank"
-                href="https://www.linkedin.com/in/iris-the-robotics-club/" 
+                href={socialLinks.linkedin} 
                 className="w-10 h-10 rounded-full bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-gray-400 hover:text-cyan-400 hover:border-cyan-400/50 hover:bg-zinc-800 transition-all duration-300"
                 aria-label="LinkedIn"
               >
@@ -45,7 +45,7 @@ export default function Footer() {
               </a>
               <a 
                 target="_blank"
-                href="https://www.instagram.com/iris.nstpune/" 
+                href={socialLinks.instagram} 
                 className="w-10 h-10 rounded-full bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-gray-400 hover:text-cyan-400 hover:border-cyan-400/50 hover:bg-zinc-800 transition-all duration-300"
                 aria-label="Instagram"
               >
@@ -63,36 +63,13 @@ export default function Footer() {
           >
             <h3 className="text-base font-semibold mb-4 text-white">Quick Links</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="#home" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="#about" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/projects" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                  Projects
-                </Link>
-              </li>
-              <li>
-                <Link href="/events" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                  Events
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/gallery" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                  Gallery
-                </Link>
-              </li>
+              {quickLinks.map((link) => (
+                <li key={link.label}>
+                  <Link href={link.href} className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </motion.div>
           
@@ -108,47 +85,38 @@ export default function Footer() {
               <li className="flex items-start">
                 <MapPin className="w-4 h-4 text-cyan-400 mr-2 mt-1 flex-shrink-0" />
                 <span className="text-gray-400 text-sm leading-relaxed">
-                  Newton School of Technology<br />
-                  Ajeenkya DY Patil University<br />
-                  Pune, Maharashtra
+                  {clubInfo.university}<br />
+                  {clubInfo.parentUniversity}<br />
+                  {clubInfo.location}
                 </span>
               </li>
               <li className="flex items-center">
                 <Mail className="w-4 h-4 text-cyan-400 mr-2 flex-shrink-0" />
-                <a href="mailto:iris@nstpune.edu" className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
-                  iris@nstpune.edu
+                <a href={`mailto:${clubInfo.email}`} className="text-gray-400 text-sm hover:text-cyan-400 transition-colors">
+                  {clubInfo.email}
                 </a>
               </li>
             </ul>
           </motion.div>
           
-          {/* Column 4: Newsletter */}
+          {/* Column 4: Get in Touch */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h3 className="text-base font-semibold mb-4 text-white">Stay Updated</h3>
+            <h3 className="text-base font-semibold mb-4 text-white">Get in Touch</h3>
             <p className="text-gray-400 text-sm mb-4 leading-relaxed">
-              Get updates on events, workshops, and projects.
+              Have questions or ideas? Reach out to us anytime.
             </p>
-            <form className="space-y-3">
-              <div>
-                <input 
-                  type="email" 
-                  placeholder="Your email" 
-                  className="w-full px-4 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg focus:outline-none focus:border-cyan-400 text-gray-300 text-sm placeholder-gray-500 transition-colors"
-                  required
-                />
-              </div>
-              <button 
-                type="submit" 
-                className="w-full px-4 py-2 bg-white text-black rounded-lg text-sm font-medium shadow-[0_0_15px_rgba(0,245,255,0.15)] hover:shadow-[0_0_25px_rgba(0,245,255,0.3)] hover:bg-cyan-50 transition-all duration-300"
-              >
-                Subscribe
-              </button>
-            </form>
+            <Link 
+              href="/contact"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg text-sm font-medium shadow-[0_0_15px_rgba(0,245,255,0.15)] hover:shadow-[0_0_25px_rgba(0,245,255,0.3)] hover:bg-cyan-50 transition-all duration-300"
+            >
+              <Mail className="w-4 h-4" />
+              Contact Us
+            </Link>
           </motion.div>
         </div>
         
@@ -156,7 +124,7 @@ export default function Footer() {
         <div className="border-t border-zinc-800/50 pt-6">
           {/* Copyright */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-gray-500 text-sm">
-            <p>© {currentYear} IRIS Robotics Club. All rights reserved.</p>
+            <p>© {currentYear} {clubInfo.fullName}. All rights reserved.</p>
             <div className="flex gap-6">
               <Link href="/privacy" className="hover:text-cyan-400 transition-colors">
                 Privacy

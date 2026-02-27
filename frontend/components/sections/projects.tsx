@@ -1,48 +1,44 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { projectsAPI } from "@/lib/api";
 
-// Sample project data
-const projects = [
-  {
-    id: 1,
-    title: "Autonomous Drone System",
-    category: "Aerial Robotics",
-    description: "AI-powered drone with object recognition and autonomous navigation capabilities for search and rescue operations.",
-    image: "/images/projects/drone.jpg", // Placeholder - will need to be created
-    tags: ["Computer Vision", "AI", "Navigation"]
-  },
-  {
-    id: 2,
-    title: "Robotic Arm Manipulator",
-    category: "Industrial Automation",
-    description: "6-DOF robotic arm with precision control for industrial applications and educational demonstrations.",
-    image: "/images/projects/robotic-arm.jpg", // Placeholder - will need to be created
-    tags: ["Kinematics", "Control Systems", "Mechanics"]
-  },
-  {
-    id: 3,
-    title: "Swarm Robotics Platform",
-    category: "Multi-Agent Systems",
-    description: "Decentralized multi-robot system that demonstrates emergent behaviors and collective intelligence.",
-    image: "/images/projects/swarm.jpg", // Placeholder - will need to be created
-    tags: ["Distributed Systems", "Algorithms", "Communication"]
-  },
-  {
-    id: 4,
-    title: "Autonomous Ground Vehicle",
-    category: "Mobile Robotics",
-    description: "Self-driving robot with LIDAR mapping and advanced path planning for indoor navigation.",
-    image: "/images/projects/agv.jpg", // Placeholder - will need to be created
-    tags: ["SLAM", "Path Planning", "Sensors"]
-  },
-];
+interface ProjectDisplay {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+}
 
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
-  
+  const [homeProjects, setHomeProjects] = useState<ProjectDisplay[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await projectsAPI.getAll();
+        const mapped = (Array.isArray(data) ? data : []).slice(0, 4).map((p: any) => ({
+          id: typeof p._id === 'object' ? p._id.$oid : (p._id || p.id || ''),
+          title: p.name || p.title || 'Untitled',
+          description: p.description || '',
+          category: p.category || p.status || 'Project',
+          tags: p.tech_stack || p.tags || [],
+        }));
+        setHomeProjects(mapped);
+      } catch {
+        setHomeProjects([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
   useEffect(() => {
     const initScrollTrigger = async () => {
       const { gsap } = await import("gsap");
@@ -94,8 +90,17 @@ export default function Projects() {
         </motion.div>
         
         {/* Projects grid */}
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : homeProjects.length === 0 ? (
+          <div className="text-center py-20 text-gray-500">
+            No projects yet. Check back soon!
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-          {projects.map((project, index) => (
+          {homeProjects.map((project, index) => (
             <motion.div
               key={project.id}
               className="project-card group block relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900/30 hover:bg-zinc-900/50 hover:border-zinc-700/50 transition-all duration-300"
@@ -137,11 +142,12 @@ export default function Projects() {
             </motion.div>
           ))}
         </div>
+        )}
         
         {/* View all projects button */}
         <div className="text-center mt-12">
           <motion.a
-            href="#"
+            href="/projects"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

@@ -17,7 +17,9 @@ import {
   X,
   ChevronRight,
   ArrowLeft,
-  FolderKanban
+  FolderKanban,
+  Image,
+  Calendar
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -25,6 +27,8 @@ const adminRoutes = [
   { name: 'Dashboard', href: '/dashboard/admin', icon: Layout },
   { name: 'Users', href: '/dashboard/admin/users', icon: Users },
   { name: 'Projects', href: '/dashboard/admin/projects', icon: Folder },
+  { name: 'Gallery', href: '/dashboard/admin/gallery', icon: Image },
+  { name: 'Events', href: '/dashboard/admin/events', icon: Calendar },
   { name: 'Coins', href: '/dashboard/admin/coins', icon: Coins },
   { name: 'Messages', href: '/dashboard/admin/messages', icon: MessageSquare },
 ];
