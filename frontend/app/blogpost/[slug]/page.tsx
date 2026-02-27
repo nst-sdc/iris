@@ -1,5 +1,6 @@
 // app/blogpost/[slug]/page.tsx (server component)
 import fs from "fs";
+import path from "path";
 import matter from "gray-matter";
 import { notFound } from "next/navigation";
 import { unified } from "unified";
@@ -56,7 +57,7 @@ async function processMarkdown(markdownContent: string): Promise<string> {
 
 async function getBlogData(slug: string): Promise<BlogData | null> {
   // 1. Try local markdown file first
-  const filepath = `articles/${slug}.md`;
+  const filepath = path.join(process.cwd(), "articles", `${slug}.md`);
   if (fs.existsSync(filepath)) {
     const fileContent = fs.readFileSync(filepath, "utf-8");
     const { content, data } = matter(fileContent) as unknown as {
